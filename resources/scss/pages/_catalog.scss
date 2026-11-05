@@ -3,7 +3,7 @@
 .catalog-page,
 .content-page {
     @include page-gutter;
-    padding-block: clamp(7rem, 12vw, 10rem) var(--space-12);
+    padding-block: clamp(9em, 15vw, 118rem) var(--space-12);
 }
 
 .catalog-page__intro {

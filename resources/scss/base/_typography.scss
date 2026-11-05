@@ -14,21 +14,24 @@ h3 {
     color: var(--color-cobalt);
     font-family: var(--font-editorial);
     font-weight: 500;
-    line-height: 0.98;
+    line-height: 1.12;
 }
 
 h1 {
     font-size: var(--text-step-4);
-    letter-spacing: -0.035em;
+    letter-spacing: -0.02em;
+    margin-bottom: var(--space-2);
 }
 
 h2 {
     font-size: var(--text-step-2);
-    letter-spacing: -0.025em;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
 }
 
 h3 {
     font-size: var(--text-step-1);
+    line-height: 1.2;
 }
 
 p {
