@@ -34,7 +34,7 @@ return new class extends Migration
             $table->date('valid_until')->nullable();
             $table->boolean('is_active')->default(true);
             $table->timestamps();
-            $table->index(['country_code', 'region_code', 'tax_class', 'is_active']);
+            $table->index(['country_code', 'region_code', 'tax_class', 'is_active'], 'tax_rates_lookup_idx');
         });
 
         Schema::create('shipping_zones', function (Blueprint $table) {
@@ -55,7 +55,7 @@ return new class extends Migration
             $table->char('currency', 3)->default('EUR');
             $table->boolean('is_active')->default(true);
             $table->timestamps();
-            $table->index(['shipping_zone_id', 'min_weight_grams', 'max_weight_grams']);
+            $table->index(['shipping_zone_id', 'min_weight_grams', 'max_weight_grams'], 'shipping_rates_zone_weight_idx');
         });
 
         Schema::create('orders', function (Blueprint $table) {
@@ -139,7 +139,7 @@ return new class extends Migration
             $table->timestamp('consumed_at')->nullable();
             $table->timestamps();
             $table->unique(['order_id', 'artwork_id']);
-            $table->index(['artwork_id', 'released_at', 'consumed_at', 'expires_at']);
+            $table->index(['artwork_id', 'released_at', 'consumed_at', 'expires_at'], 'stock_res_art_rel_cons_exp_idx');
         });
 
         Schema::create('webhook_events', function (Blueprint $table) {
