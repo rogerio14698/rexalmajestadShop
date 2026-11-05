@@ -1,0 +1,11 @@
+@function fluid-space($minimum, $maximum, $min-viewport: 22.5rem, $max-viewport: 90rem) {
+    @return clamp(
+        $minimum,
+        calc(#{$minimum} + (#{strip-unit($maximum - $minimum)} * (100vw - #{$min-viewport}) / #{strip-unit($max-viewport - $min-viewport)})),
+        $maximum
+    );
+}
+
+@function strip-unit($value) {
+    @return $value / ($value * 0 + 1);
+}

@@ -1,0 +1,205 @@
+@use '../abstracts/mixins' as *;
+
+// Exposiciones: «el registro de salas» — la trayectoria expositiva como ficha
+// cronológica. El año en cuerpo editorial grande hace de lámina; las muestras
+// se apoyan en escalones de tono, nunca en filetes.
+
+.exhibitions-page {
+    padding-block-end: var(--space-16);
+}
+
+// ——— Portada: el título del registro ———
+
+.exhibitions-hero {
+    @include page-gutter;
+
+    display: grid;
+    gap: var(--space-3);
+    width: min(100%, 72rem);
+    margin-inline: auto;
+    padding-block: clamp(5rem, 12vw, 9rem) clamp(2rem, 5vw, 3.5rem);
+
+    h1 {
+        font-family: var(--font-editorial);
+        font-size: var(--text-step-4);
+        line-height: 0.9;
+        letter-spacing: -0.02em;
+        color: var(--color-cobalt);
+    }
+}
+
+.exhibitions-hero__lede {
+    max-width: 38rem;
+    font-size: max(var(--text-step-0), 1.125rem);
+}
+
+.exhibitions-hero__count {
+    color: var(--color-cobalt);
+    font-size: var(--text-step-0);
+    font-variant-numeric: tabular-nums;
+}
+
+// ——— El registro: un capítulo por año ———
+
+.exhibitions-record {
+    @include page-gutter;
+
+    display: grid;
+    gap: clamp(3.5rem, 8vw, 6rem);
+    width: min(100%, 72rem);
+    margin-inline: auto;
+}
+
+.exhibitions-year {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 2.4fr);
+    gap: var(--space-3) clamp(1.5rem, 5vw, 4rem);
+    align-items: start;
+}
+
+.exhibitions-year__number {
+    position: sticky;
+    top: var(--space-3);
+    font-family: var(--font-editorial);
+    font-size: var(--text-step-3);
+    line-height: 0.9;
+    letter-spacing: -0.02em;
+    color: var(--color-cobalt);
+    font-variant-numeric: tabular-nums;
+}
+
+.exhibitions-year__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+}
+
+.exhibition-entry__link {
+    display: flex;
+    align-items: baseline;
+    gap: clamp(1rem, 3vw, 2.5rem);
+    padding: var(--space-3) var(--space-2);
+    color: var(--color-ink);
+    text-decoration: none;
+    transition: background-color 180ms var(--ease-enter);
+
+    &:hover,
+    &:focus-visible {
+        background-color: var(--color-bone-light);
+
+        .exhibition-entry__title {
+            color: var(--color-cobalt);
+        }
+    }
+}
+
+// Escalón de tono entre filas, como en la hoja de la tienda.
+.exhibition-entry:nth-child(even) .exhibition-entry__link {
+    background-color: rgb(255 253 249 / 55%);
+
+    &:hover,
+    &:focus-visible {
+        background-color: var(--color-bone-light);
+    }
+}
+
+.exhibition-entry__dates {
+    flex: 0 0 7.5rem;
+    color: var(--color-muted-ink);
+    font-size: var(--text-step-0);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+.exhibition-entry__heading {
+    display: grid;
+    gap: 0.2rem;
+    min-width: 0;
+}
+
+.exhibition-entry__title {
+    font-family: var(--font-editorial);
+    font-size: var(--text-step-1);
+    line-height: 1.1;
+    transition: color 180ms var(--ease-enter);
+}
+
+.exhibition-entry__venue {
+    color: var(--color-muted-ink);
+    font-size: var(--text-step-0);
+}
+
+.exhibition-entry__status {
+    margin-left: auto;
+    align-self: center;
+    padding: 0.14rem 0.6rem;
+    border-radius: 999px;
+    background-color: var(--color-blue-soft);
+    color: var(--color-cobalt-deep);
+    font-size: var(--text-step--1);
+    line-height: 1.5;
+    white-space: nowrap;
+}
+
+.exhibitions-empty {
+    font-size: var(--text-step-1);
+    max-width: 36rem;
+}
+
+// ——— La invitación: cierre en campo de color ———
+
+.exhibitions-invite {
+    @include page-gutter;
+
+    display: grid;
+    place-items: center;
+    padding-block-start: clamp(5rem, 10vw, 8rem);
+}
+
+.exhibitions-invite__card {
+    width: min(100%, 36rem);
+    display: grid;
+    gap: var(--space-3);
+    justify-items: center;
+    padding: clamp(2.5rem, 6vw, 4rem);
+    background-color: var(--color-cobalt);
+    color: var(--color-paper);
+    text-align: center;
+
+    h2 {
+        font-family: var(--font-editorial);
+        font-size: var(--text-step-2);
+        letter-spacing: -0.02em;
+    }
+
+    .button {
+        background-color: var(--color-paper);
+        color: var(--color-cobalt);
+    }
+}
+
+// ——— Teléfono ———
+
+@media (max-width: 52rem) {
+    .exhibitions-year {
+        grid-template-columns: 1fr;
+    }
+
+    .exhibitions-year__number {
+        position: static;
+    }
+
+    .exhibition-entry__link {
+        flex-wrap: wrap;
+        gap: 0.35rem var(--space-2);
+    }
+
+    .exhibition-entry__dates {
+        flex-basis: 100%;
+    }
+
+    .exhibition-entry__status {
+        margin-left: 0;
+    }
+}

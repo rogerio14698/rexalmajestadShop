@@ -1,0 +1,105 @@
+@use '../abstracts/mixins' as *;
+
+// Portfolio: la historia de la artista en secciones alternas, con pocas obras.
+
+.portfolio-story {
+    @include page-gutter;
+    padding-block: clamp(7rem, 12vw, 10rem) var(--space-16);
+    width: min(100%, 72rem);
+    margin-inline: auto;
+    display: grid;
+    gap: clamp(4.5rem, 9vw, 8rem);
+}
+
+.portfolio-story__intro {
+    max-width: 44rem;
+    display: grid;
+    gap: var(--space-3);
+
+    h1 {
+        font-family: var(--font-editorial);
+        font-size: var(--text-step-3);
+        line-height: 0.95;
+        letter-spacing: -0.02em;
+    }
+
+    p {
+        font-size: var(--text-step-1);
+        line-height: 1.4;
+    }
+}
+
+.portfolio-story__section {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: clamp(2rem, 6vw, 5rem);
+    align-items: center;
+
+    &:nth-of-type(even) {
+        .portfolio-story__figure {
+            order: -1;
+        }
+    }
+}
+
+.portfolio-story__text {
+    display: grid;
+    gap: var(--space-3);
+    max-width: 36rem;
+
+    h2 {
+        font-family: var(--font-editorial);
+        font-size: var(--text-step-2);
+        letter-spacing: -0.02em;
+        line-height: 1.05;
+    }
+}
+
+.portfolio-story__figure {
+    margin: 0;
+    display: grid;
+    gap: var(--space-2);
+
+    a {
+        display: block;
+        overflow: hidden;
+    }
+
+    img {
+        display: block;
+        width: 100%;
+        height: auto;
+        transition: transform 320ms var(--ease-enter);
+    }
+
+    a:hover img,
+    a:focus-visible img {
+        transform: scale(1.025);
+    }
+
+    figcaption {
+        color: var(--color-muted-ink);
+        font-size: var(--text-step--1);
+    }
+}
+
+.portfolio-story__empty {
+    font-size: var(--text-step-1);
+    max-width: 36rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .portfolio-story__figure img {
+        transition: none;
+    }
+}
+
+@media (max-width: 52rem) {
+    .portfolio-story__section {
+        grid-template-columns: 1fr;
+
+        &:nth-of-type(even) .portfolio-story__figure {
+            order: 0;
+        }
+    }
+}

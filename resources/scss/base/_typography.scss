@@ -1,0 +1,36 @@
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+    margin: 0;
+}
+
+h1,
+h2,
+h3 {
+    color: var(--color-cobalt);
+    font-family: var(--font-editorial);
+    font-weight: 500;
+    line-height: 0.98;
+}
+
+h1 {
+    font-size: var(--text-step-4);
+    letter-spacing: -0.035em;
+}
+
+h2 {
+    font-size: var(--text-step-2);
+    letter-spacing: -0.025em;
+}
+
+h3 {
+    font-size: var(--text-step-1);
+}
+
+p {
+    max-width: 68ch;
+}

@@ -1,0 +1,32 @@
+.form-field {
+    display: grid;
+    gap: 0.45rem;
+}
+
+.form-field__label {
+    font-size: var(--text-step--1);
+    font-weight: 600;
+}
+
+.form-field__control {
+    width: 100%;
+    min-height: 2.875rem;
+    padding: 0.65rem 0.8rem;
+    border: 1px solid #777783;
+    border-radius: var(--radius-control);
+    background: var(--color-paper);
+}
+
+.form-field__control:focus-visible {
+    outline-offset: 2px;
+}
+
+.form-field__error {
+    color: var(--color-error);
+    font-size: var(--text-step--1);
+}
+
+.form-field__help {
+    color: var(--color-muted-ink);
+    font-size: var(--text-step--1);
+}

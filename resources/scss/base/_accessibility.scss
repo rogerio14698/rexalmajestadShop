@@ -1,0 +1,24 @@
+@use '../abstracts/mixins' as *;
+
+:focus-visible {
+    @include focus-ring;
+}
+
+.skip-link {
+    position: fixed;
+    z-index: 1000;
+    top: 0.75rem;
+    left: 0.75rem;
+    padding: 0.75rem 1rem;
+    transform: translateY(-160%);
+    background: var(--color-cobalt);
+    color: var(--color-paper);
+}
+
+.skip-link:focus {
+    transform: translateY(0);
+}
+
+.visually-hidden {
+    @include visually-hidden;
+}

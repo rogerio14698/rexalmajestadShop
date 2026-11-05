@@ -1,0 +1,443 @@
+@use '../abstracts/mixins' as *;
+
+// Tienda: «la página es el objeto» — la lista de obra impresa del estudio.
+// Una hoja de papel sobre el fondo hueso; cada fila es una pieza única.
+
+.shop-page {
+    padding-block-end: var(--space-16);
+}
+
+// ——— La portada: panel de papel sobre una obra atenuada ———
+
+.shop-hero {
+    position: relative;
+    display: grid;
+    place-items: center;
+    min-height: min(88vh, 54rem);
+    overflow: hidden;
+    background-color: var(--color-cobalt-deep);
+    padding: clamp(5rem, 10vw, 8rem) clamp(1rem, 4vw, 4rem) clamp(3rem, 6vw, 5rem);
+}
+
+.shop-hero__backdrop {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(0.55) saturate(0.9);
+}
+
+.shop-hero__panel {
+    position: relative;
+    width: min(100%, 44rem);
+    background-color: var(--color-paper);
+    padding: clamp(2rem, 5vw, 4rem);
+    text-align: center;
+    display: grid;
+    gap: var(--space-3);
+    justify-items: center;
+}
+
+.shop-hero__count {
+    color: var(--color-cobalt);
+    font-size: var(--text-step-0);
+}
+
+.shop-hero__panel h1 {
+    font-family: var(--font-editorial);
+    font-size: var(--text-step-3);
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+}
+
+.shop-hero__lede {
+    max-width: 32rem;
+    font-size: max(var(--text-step-0), 1.125rem);
+}
+
+.shop-hero__filters {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-1) var(--space-3);
+    margin-top: var(--space-2);
+
+    a {
+        color: var(--color-ink);
+        text-decoration: none;
+        font-size: var(--text-step-0);
+        padding: 0.35rem 0.85rem;
+        border-radius: 999px;
+        transition: background-color 180ms var(--ease-enter), color 180ms var(--ease-enter), transform 180ms var(--ease-enter);
+
+       
+
+        &:active {
+            transform: scale(0.97);
+        }
+
+        &[aria-current='page'] {
+            background-color: var(--color-cobalt);
+            color: var(--color-paper);
+        }
+    }
+}
+
+.shop-hero__search {
+    display: flex;
+    width: min(100%, 26rem);
+    margin-top: var(--space-1);
+
+    input {
+        flex: 1;
+        min-width: 0;
+        min-height: 2.75rem;
+        padding: 0.4rem 0.9rem;
+        border: 0;
+        border-radius: var(--radius-control) 0 0 var(--radius-control);
+        background-color: var(--color-bone-light);
+        color: var(--color-ink);
+        font: inherit;
+        font-size: var(--text-step-0);
+
+        &::placeholder {
+            color: var(--color-muted-ink);
+        }
+
+        &:focus-visible {
+            outline: 2px solid var(--color-cobalt);
+            outline-offset: -2px;
+        }
+    }
+
+    button {
+        min-height: 2.75rem;
+        padding: 0.4rem 1.1rem;
+        border: 0;
+        border-radius: 0 var(--radius-control) var(--radius-control) 0;
+        background-color: var(--color-cobalt);
+        color: var(--color-paper);
+        font: inherit;
+        font-size: var(--text-step-0);
+        cursor: pointer;
+        transition: background-color 180ms var(--ease-enter);
+
+        &:hover,
+        &:focus-visible {
+            background-color: var(--color-cobalt-deep);
+        }
+    }
+}
+
+.shop-hero__searching {
+    font-size: var(--text-step--1);
+    color: var(--color-muted-ink);
+
+    a {
+        color: var(--color-cobalt);
+    }
+}
+
+// ——— La hoja: inventario por técnica ———
+
+.shop-sheet {
+    @include page-gutter;
+    display: grid;
+    gap: clamp(4rem, 9vw, 7rem);
+    width: min(100%, 72rem);
+    margin-inline: auto;
+    padding-block-start: clamp(4rem, 9vw, 7rem);
+}
+
+.shop-sheet__group {
+    display: grid;
+    gap: var(--space-4);
+
+    > h2 {
+        font-family: var(--font-editorial);
+        font-size: var(--text-step-2);
+        letter-spacing: -0.02em;
+    }
+}
+
+// Lámina destacada de cada técnica.
+.shop-plate {
+    margin: 0;
+    display: grid;
+    gap: var(--space-2);
+    justify-items: start;
+
+    a {
+        display: block;
+        overflow: hidden;
+        width: min(100%, 44rem);
+        background-color: var(--color-paper);
+        padding: clamp(0.75rem, 2vw, 1.25rem);
+    }
+
+    img {
+        display: block;
+        width: 100%;
+        height: auto;
+        max-height: 34rem;
+        object-fit: cover;
+        transition: transform 320ms var(--ease-enter);
+    }
+
+
+    figcaption {
+        color: var(--color-muted-ink);
+        font-size: var(--text-step-0);
+    }
+}
+
+.shop-sheet__empty {
+    font-size: var(--text-step-1);
+    max-width: 36rem;
+}
+
+.shop-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+}
+
+// ——— Lo vamos a transformar en Columnas ———
+.shop-row__link {
+    display: flex;
+    grid-template-columns: 9rem minmax(0, 2.2fr) minmax(0, 1.3fr) auto;
+    align-items: center;
+    gap: clamp(1rem, 3vw, 2.5rem);
+    padding: var(--space-3) var(--space-2);
+    text-decoration: none;
+    color: var(--color-ink);
+    transition: background-color 180ms var(--ease-enter);
+
+    &:focus-visible {
+        background-color: var(--color-bone-light);
+
+        .shop-row__title {
+            color: var(--color-cobalt);
+        }
+    }
+}
+
+.shop-row:nth-child(even) .shop-row__link {
+    background-color: rgb(255 253 249 / 55%);
+
+    &:hover,
+    &:focus-visible {
+        background-color: var(--color-bone-light);
+    }
+}
+
+.shop-row__media {
+    width: 20rem;
+    height: 20rem;
+    //Aunque transborde no importa que se vea toda la obra que es lo importante.
+    background-color: var(--color-blue-soft);
+
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        transition: transform 260ms var(--ease-enter);
+    }
+}
+
+.shop-row__heading {
+    display: grid;
+    gap: 0.2rem;
+    min-width: 0;
+}
+
+.shop-row__title {
+    font-family: var(--font-editorial);
+    font-size: var(--text-step-1);
+    line-height: 1.1;
+    transition: color 180ms var(--ease-enter);
+}
+
+.shop-row__meta {
+    color: var(--color-ink);
+    font-size: var(--text-step-0);
+}
+
+.shop-row__dims {
+    display: grid;
+    gap: 0.2rem;
+    font-size: var(--text-step-0);
+    color: var(--color-muted-ink);
+    font-variant-numeric: tabular-nums;
+}
+
+.shop-row__series {
+    color: var(--color-cobalt);
+}
+
+.shop-row__price {
+    justify-self: end;
+    font-size: var(--text-step-1);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+.shop-row__state {
+    font-size: var(--text-step-0);
+    color: var(--color-muted-ink);
+
+    &--ask {
+        color: var(--color-cobalt);
+    }
+}
+
+// Etiqueta de estado: vendida o en stock.
+.shop-row__badge {
+    width: fit-content;
+    margin-top: 0.3rem;
+    padding: 0.14rem 0.6rem;
+    border-radius: 999px;
+    font-size: var(--text-step--1);
+    line-height: 1.5;
+
+    &--stock {
+        background-color: var(--color-blue-soft);
+        color: var(--color-cobalt-deep);
+    }
+
+    &--sold {
+        background-color: var(--color-bone);
+        color: var(--color-muted-ink);
+    }
+}
+
+// ——— Paginación: 12 obras por página ———
+
+.shop-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2);
+    padding-block-start: var(--space-2);
+    font-variant-numeric: tabular-nums;
+}
+
+.shop-pagination__link {
+    min-height: 2.75rem;
+    display: inline-flex;
+    align-items: center;
+    padding: 0.4rem 1.1rem;
+    border-radius: 999px;
+    background-color: var(--color-cobalt);
+    color: var(--color-paper);
+    font-size: var(--text-step-0);
+    text-decoration: none;
+    transition: background-color 180ms var(--ease-enter), transform 180ms var(--ease-enter);
+
+    &:hover,
+    &:focus-visible {
+        background-color: var(--color-cobalt-deep);
+    }
+
+    &:active {
+        transform: scale(0.97);
+    }
+
+    &.is-disabled {
+        background-color: var(--color-bone);
+        color: var(--color-muted-ink);
+    }
+}
+
+.shop-pagination__status {
+    color: var(--color-muted-ink);
+    font-size: var(--text-step-0);
+}
+
+// ——— La tarjeta de respuesta ———
+
+.shop-reply {
+    @include page-gutter;
+    display: grid;
+    place-items: center;
+    padding-block-start: clamp(5rem, 10vw, 8rem);
+}
+
+.shop-reply__card {
+    width: min(100%, 36rem);
+    background-color: var(--color-cobalt);
+    color: var(--color-paper);
+    text-align: center;
+    padding: clamp(2.5rem, 6vw, 4rem);
+    display: grid;
+    gap: var(--space-3);
+    justify-items: center;
+
+    h2 {
+        font-family: var(--font-editorial);
+        font-size: var(--text-step-2);
+        letter-spacing: -0.02em;
+    }
+
+    .button {
+        background-color: var(--color-paper);
+        color: var(--color-cobalt);
+    }
+}
+
+// ——— Entrada en escena (sutil, solo transform/opacity; sin JS todo es visible) ———
+
+[data-reveal].reveal-pending:not(.is-revealed) {
+    opacity: 0;
+    transform: translateY(16px);
+}
+
+[data-reveal].reveal-pending {
+    transition:
+        opacity 300ms var(--ease-enter),
+        transform 300ms var(--ease-enter);
+    transition-delay: var(--reveal-delay, 0ms);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    [data-reveal] {
+        opacity: 1;
+        transform: none;
+        transition: none;
+    }
+
+    .shop-row__media img,
+    .shop-plate img,
+    .shop-hero__filters a {
+        transition: none;
+    }
+}
+
+// ——— Teléfono ———
+
+@media (max-width: 52rem) {
+    .shop-row__link {
+        grid-template-columns: 4.25rem minmax(0, 1fr) auto;
+    }
+
+    .shop-row__dims {
+        display: none;
+    }
+
+    .shop-row__media {
+        width: 4.25rem;
+        height: 4.25rem;
+    }
+}
+
+@media (max-width: 34rem) {
+    .shop-hero__panel {
+        padding: var(--space-4) var(--space-3);
+    }
+
+    .shop-row__price {
+        font-size: var(--text-step-0);
+    }
+}

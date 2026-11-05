@@ -1,0 +1,78 @@
+.home-page {
+    position: relative;
+    display: grid;
+    min-height: 100svh;
+    overflow: hidden;
+    place-items: center;
+    background: var(--color-bone);
+}
+
+.home-page__orb-stage {
+    position: relative;
+    width: min(90vw, 78svh, 48rem);
+    aspect-ratio: 1;
+}
+
+.home-page__sphere {
+    position: absolute;
+    border-radius: 50%;
+    background: radial-gradient(circle at 34% 28%, #ffe6a1 0, #efb538 46%, #a9650e 100%);
+    transform: translate(-50%, -50%);
+    animation: sphere-float 8s ease-in-out infinite;
+}
+
+.home-page__sphere--large {
+    top: 57.143%;
+    left: 36.607%;
+    width: 58.929%;
+    aspect-ratio: 1;
+}
+
+.home-page__sphere--small {
+    top: 25.893%;
+    left: 79.464%;
+    width: 21.429%;
+    aspect-ratio: 1;
+    animation-delay: -2.4s;
+}
+
+.home-page__canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.home-page__open-menu {
+    position: absolute;
+    z-index: 3;
+    top: 57.143%;
+    left: 36.607%;
+    width: 58.929%;
+    aspect-ratio: 1;
+    transform: translate(-50%, -50%);
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+}
+
+.home-page__open-menu:focus-visible {
+    outline-offset: 0.75rem;
+}
+
+@keyframes sphere-float {
+    0%,
+    100% {
+        translate: 0 0;
+    }
+
+    50% {
+        translate: 0 -0.6rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .home-page__sphere {
+        animation: none !important;
+    }
+}

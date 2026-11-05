@@ -1,0 +1,210 @@
+@use '../abstracts/mixins' as *;
+
+.account-page {
+    @include page-gutter;
+    width: min(100%, 72rem);
+    margin-inline: auto;
+    padding-block: clamp(6rem, 10vw, 8rem) var(--space-12);
+    display: grid;
+    gap: var(--space-6);
+
+    h1 {
+        font-family: var(--font-editorial);
+        font-size: var(--text-step-3);
+        color: var(--color-cobalt);
+        line-height: 1;
+    }
+
+    h2 {
+        font-family: var(--font-editorial);
+        font-size: var(--text-step-2);
+        margin-block-start: var(--space-4);
+    }
+}
+
+.account-breadcrumbs {
+    ol {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: var(--text-step--1);
+        color: var(--color-muted-ink);
+    }
+
+    li {
+        display: inline-flex;
+        align-items: center;
+
+        &:not(:last-child)::after {
+            content: '›';
+            margin-inline-start: 0.5rem;
+            color: var(--color-muted-ink);
+            opacity: 0.7;
+        }
+
+        a {
+            color: var(--color-ink);
+            text-decoration: none;
+            transition: color 140ms ease;
+
+            &:hover,
+            &:focus-visible {
+                color: var(--color-cobalt);
+                text-decoration: underline;
+            }
+        }
+
+        span {
+            color: var(--color-cobalt);
+            font-weight: 500;
+        }
+    }
+}
+
+.account-status {
+    padding: var(--space-2) var(--space-3);
+    background-color: var(--color-blue-soft);
+    color: var(--color-cobalt-deep);
+    border-radius: var(--radius-control);
+    font-size: var(--text-step-0);
+}
+
+.account-public-nav {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem 1.25rem;
+    padding-bottom: var(--space-2);
+    border-bottom: 1px dashed var(--color-blue-soft);
+
+    .account-public-nav__label {
+        font-size: var(--text-step--1);
+        color: var(--color-muted-ink);
+        font-weight: 500;
+    }
+
+    a {
+        text-decoration: none;
+        color: var(--color-cobalt);
+        font-size: var(--text-step--1);
+        transition: color 140ms ease, transform 140ms ease;
+
+        &:hover,
+        &:focus-visible {
+            color: var(--color-cobalt-deep);
+            text-decoration: underline;
+        }
+    }
+}
+
+.account-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1) var(--space-2);
+    border-bottom: 1px solid var(--color-blue-soft);
+    padding-bottom: var(--space-3);
+
+    a {
+        text-decoration: none;
+        color: var(--color-ink);
+        padding: 0.4rem 0.9rem;
+        border-radius: 999px;
+        font-size: var(--text-step-0);
+        transition: background-color 160ms var(--ease-enter), color 160ms var(--ease-enter);
+
+        &:hover,
+        &:focus-visible {
+            background-color: var(--color-bone);
+            color: var(--color-cobalt);
+        }
+
+        &[aria-current='page'] {
+            background-color: var(--color-cobalt);
+            color: var(--color-paper);
+        }
+    }
+}
+
+.account-orders-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: var(--space-2);
+}
+
+.account-order-card {
+    background-color: var(--color-paper);
+    padding: var(--space-3);
+    border-radius: var(--radius-control);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    transition: background-color 160ms var(--ease-enter);
+
+    &:hover {
+        background-color: var(--color-bone-light);
+    }
+
+    .account-order-card__info {
+        display: grid;
+        gap: 0.2rem;
+
+        strong {
+            font-size: var(--text-step-0);
+            color: var(--color-cobalt);
+        }
+
+        span {
+            font-size: var(--text-step--1);
+            color: var(--color-muted-ink);
+        }
+    }
+
+    .account-order-card__badge {
+        padding: 0.2rem 0.6rem;
+        border-radius: 999px;
+        font-size: var(--text-step--1);
+        background-color: var(--color-blue-soft);
+        color: var(--color-cobalt-deep);
+    }
+}
+
+.account-privacy-box {
+    margin-top: var(--space-4);
+    background-color: var(--color-paper);
+    padding: clamp(1.5rem, 4vw, 2.5rem);
+    border-radius: var(--radius-control);
+    display: grid;
+    gap: var(--space-3);
+    max-width: 36rem;
+
+    h2 {
+        margin-top: 0;
+    }
+
+    select {
+        min-height: 2.75rem;
+        padding: 0.4rem 0.75rem;
+        border: 1px solid var(--color-blue-soft);
+        border-radius: var(--radius-control);
+        background-color: var(--color-bone-light);
+        font: inherit;
+    }
+    form {
+        display: grid;
+        gap: var(--space-3);
+        margin-top: var(--space-3);
+
+        button {
+            margin-top: var(--space-3);
+            justify-self: start;
+        }
+    }
+}

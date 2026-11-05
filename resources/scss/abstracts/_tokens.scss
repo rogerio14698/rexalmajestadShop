@@ -1,0 +1,70 @@
+$bone: #f4efe6;
+$bone-light: #fbf8f2;
+$paper: #fffdf9;
+$cobalt: #1f2a9e;
+$cobalt-deep: #151d75;
+$blue-soft: #d7ddf6;
+$ink: #1c1c24;
+$muted-ink: #45464f;
+$error: #9c2525;
+$success: #17613c;
+
+$font-editorial: 'Cormorant Garamond', Georgia, serif;
+$font-sans: 'DM Sans', Arial, sans-serif;
+
+$step--1: clamp(0.875rem, 0.82rem + 0.2vw, 1rem);
+$step-0: clamp(1rem, 0.94rem + 0.25vw, 1.125rem);
+$step-1: clamp(1.25rem, 1.05rem + 0.8vw, 1.75rem);
+$step-2: clamp(1.75rem, 1.3rem + 1.8vw, 2.75rem);
+$step-3: clamp(2.5rem, 1.3rem + 4.8vw, 5.75rem);
+$step-4: clamp(3.25rem, 1.4rem + 7.6vw, 9rem);
+
+$space-1: 0.5rem;
+$space-2: 1rem;
+$space-3: 1.5rem;
+$space-4: 2rem;
+$space-6: 3rem;
+$space-8: 4rem;
+$space-12: 6rem;
+$space-16: 8rem;
+
+$radius-control: 0.25rem;
+$radius-artwork: 0;
+$shadow-overlay: 0 1.5rem 5rem rgb(31 42 158 / 14%);
+$ease-enter: cubic-bezier(0.2, 0.8, 0.2, 1);
+$ease-exit: cubic-bezier(0.4, 0, 1, 1);
+
+:root {
+    color-scheme: light;
+    --color-bone: #{$bone};
+    --color-bone-light: #{$bone-light};
+    --color-paper: #{$paper};
+    --color-cobalt: #{$cobalt};
+    --color-cobalt-deep: #{$cobalt-deep};
+    --color-blue-soft: #{$blue-soft};
+    --color-ink: #{$ink};
+    --color-muted-ink: #{$muted-ink};
+    --color-error: #{$error};
+    --color-success: #{$success};
+    --font-editorial: #{$font-editorial};
+    --font-sans: #{$font-sans};
+    --text-step--1: #{$step--1};
+    --text-step-0: #{$step-0};
+    --text-step-1: #{$step-1};
+    --text-step-2: #{$step-2};
+    --text-step-3: #{$step-3};
+    --text-step-4: #{$step-4};
+    --space-1: #{$space-1};
+    --space-2: #{$space-2};
+    --space-3: #{$space-3};
+    --space-4: #{$space-4};
+    --space-6: #{$space-6};
+    --space-8: #{$space-8};
+    --space-12: #{$space-12};
+    --space-16: #{$space-16};
+    --radius-control: #{$radius-control};
+    --radius-artwork: #{$radius-artwork};
+    --shadow-overlay: #{$shadow-overlay};
+    --ease-enter: #{$ease-enter};
+    --ease-exit: #{$ease-exit};
+}

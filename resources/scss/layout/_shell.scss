@@ -1,0 +1,120 @@
+@use '../abstracts/mixins' as *;
+
+.site-shell {
+    min-height: 100vh;
+}
+
+.site-main {
+    min-height: 70vh;
+}
+
+.site-menu-trigger {
+    position: fixed;
+    z-index: 120;
+    top: clamp(1rem, 3vw, 2rem);
+    right: clamp(1rem, 4vw, 3.5rem);
+    display: grid;
+    width: 3.25rem;
+    height: 3.25rem;
+    place-content: center;
+    gap: 0.38rem;
+    border: 0;
+    border-radius: 50%;
+    background: var(--color-cobalt);
+    color: var(--color-paper);
+}
+
+.site-menu-trigger span {
+    width: 1.25rem;
+    height: 2px;
+    background: currentColor;
+    transition: transform 220ms var(--ease-enter);
+}
+
+.site-menu-trigger[aria-expanded='true'] span:first-child {
+    transform: translateY(0.24rem) rotate(45deg);
+}
+
+.site-menu-trigger[aria-expanded='true'] span:last-child {
+    transform: translateY(-0.24rem) rotate(-45deg);
+}
+
+.site-menu {
+    position: fixed;
+    z-index: 110;
+    inset: 0;
+    overflow-y: auto;
+    padding: clamp(6rem, 12vh, 9rem) clamp(1.25rem, 8vw, 8rem) 4rem;
+    background: var(--color-bone-light);
+    box-shadow: var(--shadow-overlay);
+}
+
+.site-menu__title {
+    max-width: 9ch;
+    margin-bottom: var(--space-6);
+    font-family: var(--font-editorial);
+    font-size: var(--text-step-3);
+    line-height: 0.95;
+}
+
+.site-menu__links {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.2rem clamp(1rem, 5vw, 5rem);
+    max-width: 64rem;
+}
+
+.site-menu__links a {
+    width: fit-content;
+    min-height: 2.75rem;
+    color: var(--color-cobalt);
+    font-family: var(--font-editorial);
+    font-size: clamp(1.4rem, 3.5vw, 2.8rem);
+    line-height: 1.2;
+    text-decoration: none;
+    transition: color 160ms ease, transform 160ms ease;
+}
+
+.site-menu__links a:hover {
+    color: var(--color-cobalt-deep);
+    transform: translateX(0.3rem);
+}
+
+.site-footer {
+    @include page-gutter;
+
+    display: flex;
+    min-height: 9rem;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    color: var(--color-ink);
+    font-size: var(--text-step--1);
+}
+
+.site-footer nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 1.25rem;
+}
+
+.site-footer nav a {
+    color: var(--color-cobalt);
+}
+
+.site-footer a {
+    color: var(--color-cobalt);
+}
+
+@media (max-width: 38rem) {
+    .site-menu__links {
+        grid-template-columns: 1fr;
+    }
+
+    .site-footer {
+        align-items: flex-start;
+        flex-direction: column;
+        justify-content: center;
+        padding-block: var(--space-4);
+    }
+}

@@ -1,0 +1,70 @@
+@use '../abstracts/mixins' as *;
+
+.catalog-page,
+.content-page {
+    @include page-gutter;
+    padding-block: clamp(7rem, 12vw, 10rem) var(--space-12);
+}
+
+.catalog-page__intro {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--space-4);
+    margin-bottom: var(--space-8);
+}
+
+.catalog-page__grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(1.25rem, 3vw, 3rem);
+}
+
+.catalog-page__year {
+    grid-column: 1 / -1;
+    margin-top: var(--space-6);
+}
+
+.artwork-detail {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(18rem, 0.9fr);
+    gap: clamp(2rem, 6vw, 7rem);
+    align-items: start;
+}
+
+.artwork-detail__information {
+    position: sticky;
+    top: 2rem;
+    display: grid;
+    gap: var(--space-3);
+}
+
+.page-prose {
+    display: grid;
+    gap: var(--space-3);
+}
+
+@media (max-width: 52rem) {
+    .catalog-page__grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .artwork-detail {
+        grid-template-columns: 1fr;
+    }
+
+    .artwork-detail__information {
+        position: static;
+    }
+}
+
+@media (max-width: 34rem) {
+    .catalog-page__grid {
+        grid-template-columns: 1fr;
+    }
+
+    .catalog-page__intro {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}

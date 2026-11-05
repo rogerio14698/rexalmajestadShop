@@ -1,0 +1,20 @@
+// Aviso informativo de cookies: en el flujo del documento (no tapa contenido),
+// como una franja discreta antes del pie.
+.cookie-notice {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    background: var(--color-paper);
+    padding: 1rem clamp(1rem, 4vw, 4rem);
+
+    &[hidden] {
+        display: none;
+    }
+
+    p {
+        margin: 0;
+        font-size: 1rem;
+    }
+}

@@ -1,0 +1,14 @@
+.motif {
+    overflow: visible;
+    color: var(--color-cobalt);
+}
+
+.motif path,
+.motif line,
+.motif circle {
+    vector-effect: non-scaling-stroke;
+}
+
+.motif--quiet {
+    opacity: 0.34;
+}
