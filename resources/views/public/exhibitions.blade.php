@@ -16,15 +16,21 @@
 
         return null;
     };
+    $exhibitionsHeroImage = \App\Models\SiteSetting::getHeroImageUrl('hero_exhibitions');
 @endphp
 
 <x-app title="Exposiciones | Rexalmajestad" description="Exposiciones y muestras de la obra de Rexalmajestad." :canonical="route('exhibitions.index')">
     {{-- El registro de salas: la trayectoria expositiva como ficha cronológica del estudio. --}}
     <section class="exhibitions-page" aria-labelledby="exhibitions-title">
-        <header class="exhibitions-hero" data-reveal>
-            <h1 id="exhibitions-title">Exposiciones</h1>
-            <p class="exhibitions-hero__lede">El registro de salas del estudio: muestras individuales y colectivas donde ha colgado la obra de Rexalmajestad, de la más reciente a la primera.</p>
-            <p class="exhibitions-hero__count">{{ $exhibitions->count() }} {{ $exhibitions->count() === 1 ? 'muestra registrada' : 'muestras registradas' }}</p>
+        <header class="exhibitions-hero @if ($exhibitionsHeroImage) exhibitions-hero--with-image @endif" data-reveal>
+            @if ($exhibitionsHeroImage)
+                <img class="exhibitions-hero__backdrop" src="{{ $exhibitionsHeroImage }}" alt="" aria-hidden="true">
+            @endif
+            <div class="exhibitions-hero__content">
+                <h1 id="exhibitions-title">Exposiciones</h1>
+                <p class="exhibitions-hero__lede">El registro de salas del estudio: muestras individuales y colectivas donde ha colgado la obra de Rexalmajestad, de la más reciente a la primera.</p>
+                <p class="exhibitions-hero__count">{{ $exhibitions->count() }} {{ $exhibitions->count() === 1 ? 'muestra registrada' : 'muestras registradas' }}</p>
+            </div>
         </header>
 
         <div class="exhibitions-record">

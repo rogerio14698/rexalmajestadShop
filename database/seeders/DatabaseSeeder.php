@@ -41,6 +41,7 @@ class DatabaseSeeder extends Seeder
             LegalDocumentSeeder::class,
             PortfolioSeeder::class,
             CustomerExampleSeeder::class,
+            SiteSettingSeeder::class,
         ]);
     }
 }

@@ -1,5 +1,6 @@
 @php
-    $heroArtwork = $artworks->first(fn ($artwork) => $artwork->getFirstMediaUrl('artwork') !== '');
+    $customHeroUrl = \App\Models\SiteSetting::getHeroImageUrl('hero_shop');
+    $heroBackdropUrl = $customHeroUrl ?: ($artworks->first(fn ($artwork) => $artwork->getFirstMediaUrl('artwork') !== '')?->getFirstMediaUrl('artwork', 'webp') ?: '');
     $priceFor = fn ($artwork) => number_format($artwork->price_cents / 100, 0, ',', '.').' €';
 @endphp
 
@@ -11,10 +12,10 @@
     <section class="shop-page" aria-labelledby="shop-title">
         {{-- La hoja: la lista de obra del estudio, como el inventario impreso de una exposición. --}}
         <header class="shop-hero">
-            @if ($heroArtwork)
+            @if ($heroBackdropUrl)
                 <img
                     class="shop-hero__backdrop"
-                    src="{{ $heroArtwork->getFirstMediaUrl('artwork', 'webp') }}"
+                    src="{{ $heroBackdropUrl }}"
                     alt=""
                     aria-hidden="true"
                 >

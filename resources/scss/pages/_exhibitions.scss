@@ -13,11 +13,44 @@
 .exhibitions-hero {
     @include page-gutter;
 
+    position: relative;
     display: grid;
     gap: var(--space-3);
     width: min(100%, 72rem);
     margin-inline: auto;
     padding-block: clamp(5rem, 12vw, 9rem) clamp(2rem, 5vw, 3.5rem);
+
+    &--with-image {
+        overflow: hidden;
+        border-radius: var(--radius-control);
+        padding: clamp(3rem, 8vw, 6rem) clamp(1.5rem, 4vw, 3.5rem);
+        margin-block-start: clamp(4rem, 8vw, 6rem);
+        background-color: var(--color-cobalt-deep);
+
+        .exhibitions-hero__backdrop {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.4) saturate(0.85);
+        }
+
+        .exhibitions-hero__content {
+            position: relative;
+            display: grid;
+            gap: var(--space-2);
+            color: var(--color-paper);
+
+            h1 {
+                color: var(--color-paper);
+            }
+
+            .exhibitions-hero__count {
+                color: var(--color-blue-soft);
+            }
+        }
+    }
 
     h1 {
         font-family: var(--font-editorial);

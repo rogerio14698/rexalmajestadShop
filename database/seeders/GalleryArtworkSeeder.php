@@ -96,6 +96,10 @@ class GalleryArtworkSeeder extends Seeder
      */
     private function resolvePath(string $sourceDir, string $file): ?string
     {
+        if (! is_dir($sourceDir)) {
+            return null;
+        }
+
         $path = $sourceDir.DIRECTORY_SEPARATOR.$file;
 
         if (is_file($path)) {
