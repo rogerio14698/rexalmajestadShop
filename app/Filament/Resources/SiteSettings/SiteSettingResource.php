@@ -7,13 +7,13 @@ use App\Models\SiteSetting;
 use BackedEnum;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
-use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -55,10 +55,10 @@ class SiteSettingResource extends Resource
                     ->preload()
                     ->nullable()
                     ->helperText('Si eliges una obra, se usará su fotografía de fondo.'),
-                SpatieMediaLibraryFileUpload::make('image')
+                FileUpload::make('value')
                     ->label('O subir imagen personalizada directamente')
-                    ->collection('image')
                     ->disk('public')
+                    ->directory('banners')
                     ->image()
                     ->imageEditor()
                     ->helperText('Sube una imagen para este banner si no deseas vincularla a una obra.')
@@ -73,7 +73,7 @@ class SiteSettingResource extends Resource
                 TextColumn::make('label')->label('Sección / Banner')->searchable(),
                 TextColumn::make('key')->label('Clave'),
                 TextColumn::make('artwork.title')->label('Obra asociada')->placeholder('Ninguna'),
-                SpatieMediaLibraryImageColumn::make('image')->collection('image')->label('Imagen subida'),
+                ImageColumn::make('value')->disk('public')->label('Imagen subida'),
             ])
             ->recordActions([
                 EditAction::make()->label('Editar'),

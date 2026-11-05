@@ -10,7 +10,7 @@ function createOrbTexture(THREE) {
     }
 
     // Fondo de la textura de la esfera
-    context.fillStyle = '#0a00cb';
+    context.fillStyle = '#2b20f8';
     context.fillRect(0, 0, textureCanvas.width, textureCanvas.height);
 
     for (let index = 0; index < 1400; index += 1) {
@@ -19,7 +19,7 @@ function createOrbTexture(THREE) {
         const width = 8 + Math.random() * 36;
 
         context.beginPath();
-        context.strokeStyle = index % 4 === 0 ? 'rgba(158, 0, 0, 0.2)' : 'rgba(139, 76, 11, 0.12)';
+        context.strokeStyle = index % 4 === 0 ? 'rgba(170, 170, 170, 0.48)' : 'rgba(255, 128, 0, 0.16)';
         context.lineWidth = 0.5 + Math.random() * 1.4;
         context.moveTo(x, y);
         context.bezierCurveTo(x + width * 0.25, y - 2, x + width * 0.7, y + 3, x + width, y);
@@ -40,10 +40,10 @@ function createSphere(THREE, texture, radius, segments) {
     const material = new THREE.MeshStandardMaterial({
         color: '#ffffff',
         map: texture,
-        roughness: 0.82,
+        roughness: 0.9,
         metalness: 0,
         bumpMap: texture,
-        bumpScale: 0.022,
+        bumpScale: 0.06
     });
 
     return new THREE.Mesh(geometry, material);

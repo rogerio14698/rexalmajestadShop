@@ -3,6 +3,8 @@
     description="La historia del trabajo de Rexalmajestad, contada por la propia artista con algunas obras clave."
     :canonical="route('portfolio')"
 >
+    <x-breadcrumbs :items="['Portfolio' => '']" />
+
     <section class="portfolio-story" aria-labelledby="portfolio-title">
         <header class="portfolio-story__intro" data-reveal>
             <h1 id="portfolio-title">Portfolio</h1>

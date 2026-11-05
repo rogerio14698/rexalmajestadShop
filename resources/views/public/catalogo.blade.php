@@ -4,6 +4,10 @@
 @endphp
 
 <x-app :title="$title.' | Rexalmajestad'" :description="'Obras de '.$title.' de Rexalmajestad.'" :canonical="url()->current()">
+    <x-breadcrumbs :items="[
+        $title => '',
+    ]" />
+
     <section class="catalog-page" aria-labelledby="catalog-title">
         <div class="catalog-page__intro">
             <div>

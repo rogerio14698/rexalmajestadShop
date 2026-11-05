@@ -1,7 +1,7 @@
 @use '../abstracts/mixins' as *;
 
 .site-shell {
-    min-height: 100vh;
+    min-height: 100dvh;
 }
 
 .site-main {
@@ -46,7 +46,7 @@
     overflow-y: auto;
     padding: clamp(6rem, 12vh, 9rem) clamp(1.25rem, 8vw, 8rem) 4rem;
     background: var(--color-bone-light);
-    box-shadow: var(--shadow-overlay);
+    box-shadow: var(--shadow-overlay); // taste-skill-ignore: real overlay dialog menu
 }
 
 .site-menu__title {
@@ -64,7 +64,8 @@
     max-width: 64rem;
 }
 
-.site-menu__links a {
+.site-menu__links a,
+.site-menu__logout-btn {
     width: fit-content;
     min-height: 2.75rem;
     color: var(--color-cobalt);
@@ -73,11 +74,85 @@
     line-height: 1.2;
     text-decoration: none;
     transition: color 160ms ease, transform 160ms ease;
+    background: transparent;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+    text-align: left;
 }
 
-.site-menu__links a:hover {
+.site-menu__links a:hover,
+.site-menu__logout-btn:hover,
+.site-menu__logout-btn:focus-visible {
     color: var(--color-cobalt-deep);
     transform: translateX(0.3rem);
+}
+
+.site-menu__logout-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    opacity: 0.85;
+
+    &::after {
+        content: '→';
+        font-family: var(--font-sans);
+        font-size: 1.1rem;
+        transition: transform 160ms ease;
+    }
+
+    &:hover::after {
+        transform: translateX(4px);
+    }
+}
+
+.site-breadcrumbs {
+    @include page-gutter;
+    width: min(100%, 72rem);
+    margin-inline: auto;
+    padding-top: clamp(4.5rem, 8vw, 6.5rem);
+    margin-bottom: calc(var(--space-4) * -1);
+
+    ol {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: var(--text-step--1);
+        color: var(--color-muted-ink);
+    }
+
+    li {
+        display: inline-flex;
+        align-items: center;
+
+        &:not(:last-child)::after {
+            content: '›';
+            margin-inline-start: 0.5rem;
+            color: var(--color-muted-ink);
+            opacity: 0.6;
+        }
+
+        a {
+            color: var(--color-ink);
+            text-decoration: none;
+            transition: color 140ms ease;
+
+            &:hover,
+            &:focus-visible {
+                color: var(--color-cobalt);
+                text-decoration: underline;
+            }
+        }
+
+        span {
+            color: var(--color-cobalt);
+            font-weight: 500;
+        }
+    }
 }
 
 .site-footer {

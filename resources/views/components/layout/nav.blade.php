@@ -17,7 +17,7 @@
     @auth
         <form method="POST" action="{{ route('logout') }}" data-menu-item>
             @csrf
-            <button class="site-menu__link" type="submit">Cerrar sesión</button>
+            <button class="site-menu__logout-btn" type="submit">Cerrar sesión</button>
         </form>
     @endauth
     <a href="{{ route('cart.show') }}" data-menu-item>Carrito</a>

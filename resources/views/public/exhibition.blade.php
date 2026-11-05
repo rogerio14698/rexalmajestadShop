@@ -25,6 +25,12 @@
     @push('structured-data')
         <script type="application/ld+json">{!! json_encode($exhibitionSchema, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT | JSON_THROW_ON_ERROR) !!}</script>
     @endpush
+
+    <x-breadcrumbs :items="[
+        'Exposiciones' => route('exhibitions.index'),
+        $exhibition->title => '',
+    ]" />
+
     <section class="content-page" aria-labelledby="exhibition-title">
         <h1 id="exhibition-title">{{ $exhibition->title }}</h1>
         @if ($exhibition->starts_at)

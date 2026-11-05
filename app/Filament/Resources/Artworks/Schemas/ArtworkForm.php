@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Artworks\Schemas;
 
 use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -60,6 +61,16 @@ class ArtworkForm
                 Toggle::make('is_sold')->label('Vendida'),
                 Toggle::make('ask_shipping')->label('Consultar envío'),
                 DateTimePicker::make('published_at')->label('Publicada'),
+                FileUpload::make('uploaded_images')
+                    ->label('Fotografías de la obra')
+                    ->disk('public')
+                    ->directory('artwork-temp')
+                    ->multiple()
+                    ->reorderable()
+                    ->image()
+                    ->imageEditor()
+                    ->helperText('Puedes subir una o varias imágenes. Si subes más de una, se mostrarán como carrusel.')
+                    ->columnSpanFull(),
             ]);
     }
 }

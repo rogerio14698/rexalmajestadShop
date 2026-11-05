@@ -46,6 +46,10 @@ class SiteSetting extends Model implements HasMedia
      */
     public function getImageUrl(): ?string
     {
+        if (! empty($this->value)) {
+            return \Illuminate\Support\Facades\Storage::disk('public')->url($this->value);
+        }
+
         $mediaUrl = $this->getFirstMediaUrl('image', 'webp') ?: $this->getFirstMediaUrl('image');
         if ($mediaUrl !== '') {
             return $mediaUrl;

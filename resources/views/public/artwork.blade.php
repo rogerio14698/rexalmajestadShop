@@ -20,6 +20,12 @@
     @push('structured-data')
         <script type="application/ld+json">{!! json_encode($artworkSchema, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT | JSON_THROW_ON_ERROR) !!}</script>
     @endpush
+
+    <x-breadcrumbs :items="[
+        $artwork->categoryLabel() ?: 'Catálogo' => $artwork->category ? route('artworks.category', ['category' => $artwork->category->slug]) : route('artworks.index'),
+        $artwork->title => '',
+    ]" />
+
     <section class="content-page artwork-detail" aria-labelledby="artwork-title">
         <div>
             @if ($artwork->getMedia('artwork')->isNotEmpty())

@@ -1,4 +1,6 @@
 <x-app title="Carrito | Rexalmajestad">
+    <x-breadcrumbs :items="['Carrito' => '']" />
+
     <section class="content-page" aria-labelledby="cart-title">
         <h1 id="cart-title">Carrito</h1>
         @if (session('status'))

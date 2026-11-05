@@ -1,4 +1,6 @@
 <x-app title="Contacto | Rexalmajestad" description="Escribe a Rexalmajestad para consultas sobre su obra y exposiciones." :canonical="route('contact.create')">
+    <x-breadcrumbs :items="['Contacto' => '']" />
+
     <section class="content-page" aria-labelledby="contact-title">
         <h1 id="contact-title">Contacto</h1>
         <p>Para consultas sobre obras, exposiciones o envíos, escribe un mensaje.</p>
