@@ -5,15 +5,22 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
 /**
- * Sección de la página /portfolio: la historia de la artista,
- * con una obra destacada opcional por sección. CRUD desde el admin.
+ * Sección de la página /bio: biografía, statement, currículum
+ * (exposiciones en solitario, colectivas, premios, prensa...), con galería de imágenes.
  */
-class PortfolioSection extends Model
+class PortfolioSection extends Model implements HasMedia
 {
+    use InteractsWithMedia;
+
     protected $fillable = [
+        'type',
         'heading',
+        'subtitle',
+        'year_label',
         'body',
         'artwork_id',
         'position',
@@ -28,6 +35,21 @@ class PortfolioSection extends Model
         ];
     }
 
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('gallery')->useDisk('public');
+    }
+
+    public function registerMediaConversions(?\Spatie\MediaLibrary\MediaCollections\Models\Media $media = null): void
+    {
+        $this->addMediaConversion('webp')
+            ->format('webp')
+            ->width(1800)
+            ->height(1800)
+            ->performOnCollections('gallery')
+            ->nonQueued();
+    }
+
     public function artwork(): BelongsTo
     {
         return $this->belongsTo(Artwork::class);
@@ -38,3 +60,4 @@ class PortfolioSection extends Model
         return $query->whereNotNull('published_at')->where('published_at', '<=', now());
     }
 }
+

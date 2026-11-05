@@ -56,6 +56,25 @@
     }
 }
 
+.portfolio-story__year {
+    font-size: var(--text-step-0);
+    color: var(--color-cobalt);
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.portfolio-story__subtitle {
+    font-size: var(--text-step-0);
+    color: var(--color-muted-ink);
+    font-style: italic;
+    margin: 0;
+}
+
+.portfolio-story__gallery {
+    width: 100%;
+}
+
 .portfolio-story__figure {
     margin: 0;
     display: grid;

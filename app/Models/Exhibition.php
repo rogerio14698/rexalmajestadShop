@@ -4,11 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\Translatable\HasTranslations;
 
-class Exhibition extends Model
+class Exhibition extends Model implements HasMedia
 {
     use HasTranslations;
+    use InteractsWithMedia;
 
     public array $translatable = ['title', 'description'];
 
@@ -33,6 +36,30 @@ class Exhibition extends Model
         ];
     }
 
+    protected static function booted(): void
+    {
+        static::saving(function (Exhibition $exhibition) {
+            if (empty($exhibition->published_at)) {
+                $exhibition->published_at = now();
+            }
+        });
+    }
+
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('exhibition')->useDisk('public');
+    }
+
+    public function registerMediaConversions(?\Spatie\MediaLibrary\MediaCollections\Models\Media $media = null): void
+    {
+        $this->addMediaConversion('webp')
+            ->format('webp')
+            ->width(1800)
+            ->height(1800)
+            ->performOnCollections('exhibition')
+            ->nonQueued();
+    }
+
     public function scopePublished(Builder $query): Builder
     {
         return $query->whereNotNull('published_at')->where('published_at', '<=', now());
@@ -43,3 +70,4 @@ class Exhibition extends Model
         $this->attributes['country_code'] = $countryCode === null ? null : strtoupper($countryCode);
     }
 }
+

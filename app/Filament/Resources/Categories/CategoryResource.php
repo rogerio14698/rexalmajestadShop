@@ -36,6 +36,13 @@ class CategoryResource extends Resource
     {
         return $schema
             ->components([
+                \Filament\Forms\Components\Select::make('parent_id')
+                    ->label('Categoría padre (opcional)')
+                    ->relationship('parent', 'name')
+                    ->searchable()
+                    ->preload()
+                    ->nullable()
+                    ->helperText('Déjalo vacío si es una categoría principal (ej: Obras Gráfica y Papel). Elige una padre si es subcategoría (ej: Dibujos).'),
                 TextInput::make('name')->label('Nombre')->required()->maxLength(120)
                     ->live(onBlur: true)
                     ->afterStateUpdated(fn ($state, callable $set, string $operation) => $operation === 'create' ? $set('slug', Str::slug((string) $state)) : null),
@@ -52,6 +59,7 @@ class CategoryResource extends Resource
             ->columns([
                 TextColumn::make('position')->label('Orden')->sortable(),
                 TextColumn::make('name')->label('Nombre')->searchable()->sortable(),
+                TextColumn::make('parent.name')->label('Categoría padre')->badge()->placeholder('Principal'),
                 TextColumn::make('slug')->label('URL'),
                 TextColumn::make('artworks_count')->label('Obras')->counts('artworks'),
             ])

@@ -47,6 +47,9 @@
                                     <span class="exhibition-entry__heading">
                                         <span class="exhibition-entry__title">{{ $exhibition->title }}</span>
                                         <span class="exhibition-entry__venue">{{ collect([$exhibition->venue, $exhibition->city, $exhibition->country_code])->filter()->join(' · ') }}</span>
+                                        @if ($exhibition->published_at)
+                                            <span class="exhibition-entry__published">Publicada el {{ $exhibition->published_at->format('d/m/Y') }}</span>
+                                        @endif
                                     </span>
                                     @if ($statusFor($exhibition))
                                         <span class="exhibition-entry__status">{{ $statusFor($exhibition) }}</span>

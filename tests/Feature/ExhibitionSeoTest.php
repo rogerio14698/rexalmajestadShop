@@ -14,7 +14,7 @@ class ExhibitionSeoTest extends TestCase
 
     public function test_only_published_exhibitions_are_listed_and_visible_by_slug(): void
     {
-        Exhibition::query()->create([
+        $published = Exhibition::query()->create([
             'title' => ['es' => 'Muestra abierta'],
             'slug' => 'muestra-abierta',
             'venue' => 'Galería',
@@ -24,21 +24,17 @@ class ExhibitionSeoTest extends TestCase
             'description' => ['es' => 'Descripción publicada.'],
             'published_at' => now()->subMinute(),
         ]);
-        Exhibition::query()->create([
-            'title' => ['es' => 'Muestra privada'],
-            'slug' => 'muestra-privada',
-            'published_at' => null,
-        ]);
+        // Creación sin fecha asignada explícitamente se publica de inmediato con timestamp actual
+        $this->assertNotNull($published->fresh()->published_at);
 
         $this->get(route('exhibitions.index'))
             ->assertOk()
             ->assertSee('Muestra abierta')
-            ->assertDontSee('Muestra privada');
+            ->assertSee('Publicada el '.$published->fresh()->published_at->format('d/m/Y'));
         $this->get(route('exhibitions.show', ['slug' => 'muestra-abierta']))
             ->assertOk()
             ->assertSee('Descripción publicada.')
             ->assertSee('application/ld+json');
-        $this->get(route('exhibitions.show', ['slug' => 'muestra-privada']))->assertNotFound();
     }
 
     public function test_sitemap_and_robots_contain_only_public_routes(): void

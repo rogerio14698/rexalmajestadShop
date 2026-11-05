@@ -13,17 +13,119 @@ function createOrbTexture(THREE) {
     context.fillStyle = '#2b20f8';
     context.fillRect(0, 0, textureCanvas.width, textureCanvas.height);
 
-    for (let index = 0; index < 1400; index += 1) {
-        const x = Math.random() * textureCanvas.width;
-        const y = Math.random() * textureCanvas.height;
-        const width = 8 + Math.random() * 36;
+    const textureWidth = textureCanvas.width;
+    const textureHeight = textureCanvas.height;
+
+    // Paleta solo en tonos azules: [r, g, b, opacidad]
+    const blues = [
+        [10, 0, 150, 0.55],    // azul profundo
+        [5, 0, 90, 0.5],       // azul casi negro
+        [20, 30, 200, 0.45],   // azul eléctrico
+        [60, 70, 230, 0.4],    // azul medio
+        [110, 125, 255, 0.3],  // azul claro
+    ];
+    const pickBlue = () => blues[Math.floor(Math.random() * blues.length)];
+
+    // Borde ondulado e irregular. Usa frecuencias enteras para que la forma
+    // se repita sin costura al dar la vuelta completa a la esfera.
+    const makeWave = () => {
+        const waves = Array.from({ length: 3 }, () => {
+            const frequency = 1 + Math.floor(Math.random() * 6);
+
+            return {
+                frequency,
+                amplitude: (6 + Math.random() * 18) / Math.sqrt(frequency),
+                phase: Math.random() * Math.PI * 2,
+            };
+        });
+
+        return (x) => waves.reduce(
+            (sum, wave) => sum + Math.sin((x / textureWidth) * Math.PI * 2 * wave.frequency + wave.phase) * wave.amplitude,
+            0,
+        );
+    };
+
+    // Bandas irregulares: pocas, de grosor variable y con bordes ondulados
+    const minBand = 24;  // grosor mínimo (px de textura)
+    const maxBand = 90;  // grosor máximo (px de textura)
+    const step = 8;      // resolución del contorno
+
+    let bandY = -20;
+    while (bandY < textureHeight) {
+        const bandHeight = minBand + Math.random() * (maxBand - minBand);
+        const [r, g, b, a] = pickBlue();
+        const topWave = makeWave();
+        const bottomWave = makeWave();
 
         context.beginPath();
-        context.strokeStyle = index % 4 === 0 ? 'rgba(170, 170, 170, 0.48)' : 'rgba(255, 128, 0, 0.16)';
-        context.lineWidth = 0.5 + Math.random() * 1.4;
-        context.moveTo(x, y);
-        context.bezierCurveTo(x + width * 0.25, y - 2, x + width * 0.7, y + 3, x + width, y);
-        context.stroke();
+        context.moveTo(0, bandY + topWave(0));
+        for (let x = step; x <= textureWidth; x += step) {
+            context.lineTo(x, bandY + topWave(x));
+        }
+        for (let x = textureWidth; x >= 0; x -= step) {
+            context.lineTo(x, bandY + bandHeight + bottomWave(x));
+        }
+        context.closePath();
+
+        // Degradado más amplio: la banda es opaca solo en el centro y se funde hacia los bordes
+        const gradient = context.createLinearGradient(0, bandY - 40, 0, bandY + bandHeight + 40);
+        gradient.addColorStop(0, `rgba(${r}, ${g}, ${b}, 0)`);
+        gradient.addColorStop(0.5, `rgba(${r}, ${g}, ${b}, ${a})`);
+        gradient.addColorStop(1, `rgba(${r}, ${g}, ${b}, 0)`);
+        context.fillStyle = gradient;
+        context.fill();
+
+        bandY += bandHeight * (0.6 + Math.random() * 0.5);
+    }
+
+    // Manchas alargadas y difusas para romper la regularidad (como nubes de gas)
+    const blotchCount = 45;
+    for (let index = 0; index < blotchCount; index += 1) {
+        const x = Math.random() * textureWidth;
+        const y = Math.random() * textureHeight;
+        const radius = 24 + Math.random() * 50;
+        const stretch = 2.5 + Math.random() * 5; // cuanto más alto, más alargada en horizontal
+        const [r, g, b] = pickBlue();
+        const alpha = 0.15 + Math.random() * 0.2;
+
+        // Se dibuja también desplazada una vuelta a cada lado para que no haya corte en el borde
+        for (const offset of [-textureWidth, 0, textureWidth]) {
+            context.save();
+            context.translate(x + offset, y);
+            context.scale(stretch, 1);
+
+            const blotch = context.createRadialGradient(0, 0, 0, 0, 0, radius);
+            blotch.addColorStop(0, `rgba(${r}, ${g}, ${b}, ${alpha})`);
+            blotch.addColorStop(1, `rgba(${r}, ${g}, ${b}, 0)`);
+            context.fillStyle = blotch;
+            context.beginPath();
+            context.arc(0, 0, radius, 0, Math.PI * 2);
+            context.fill();
+            context.restore();
+        }
+    }
+
+    // Desenfoque final: se reduce la textura y se vuelve a ampliar suavizada.
+    // Funciona en todos los navegadores (context.filter no va en Safari).
+    // 1 = sin desenfoque, 4 = suave, 8 = muy difuminado.
+    const blurFactor = 2.3;
+
+    if (blurFactor > 1) {
+        const smallCanvas = document.createElement('canvas');
+        smallCanvas.width = Math.max(1, Math.round(textureWidth / blurFactor));
+        smallCanvas.height = Math.max(1, Math.round(textureHeight / blurFactor));
+
+        const smallContext = smallCanvas.getContext('2d');
+
+        if (smallContext) {
+            smallContext.imageSmoothingEnabled = true;
+            smallContext.imageSmoothingQuality = 'high';
+            smallContext.drawImage(textureCanvas, 0, 0, smallCanvas.width, smallCanvas.height);
+
+            context.imageSmoothingEnabled = true;
+            context.imageSmoothingQuality = 'high';
+            context.drawImage(smallCanvas, 0, 0, textureWidth, textureHeight);
+        }
     }
 
     const texture = new THREE.CanvasTexture(textureCanvas);
@@ -35,6 +137,46 @@ function createOrbTexture(THREE) {
     return texture;
 }
 
+function createShadowTexture(THREE) {
+    const size = 256;
+    const shadowCanvas = document.createElement('canvas');
+    shadowCanvas.width = size;
+    shadowCanvas.height = size;
+
+    const ctx = shadowCanvas.getContext('2d');
+
+    if (!ctx) {
+        throw new Error('No se pudo crear el contexto de textura para las sombras.');
+    }
+
+    const gradient = ctx.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
+    gradient.addColorStop(0, 'rgba(10, 0, 90, 0.55)');
+    gradient.addColorStop(0.5, 'rgba(10, 0, 90, 0.22)');
+    gradient.addColorStop(1, 'rgba(10, 0, 90, 0)');
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, size, size);
+
+    return new THREE.CanvasTexture(shadowCanvas);
+}
+
+function createShadow(THREE, texture, width, height) {
+    const mesh = new THREE.Mesh(
+        new THREE.PlaneGeometry(1, 1),
+        new THREE.MeshBasicMaterial({
+            map: texture,
+            transparent: true,
+            depthWrite: false,
+            toneMapped: false,
+        }),
+    );
+
+    mesh.scale.set(width, height, 1);
+    mesh.userData.baseScale = { x: width, y: height };
+    mesh.position.z = -1;
+
+    return mesh;
+}
+
 function createSphere(THREE, texture, radius, segments) {
     const geometry = new THREE.SphereGeometry(radius, segments, segments);
     const material = new THREE.MeshStandardMaterial({
@@ -43,7 +185,7 @@ function createSphere(THREE, texture, radius, segments) {
         roughness: 0.9,
         metalness: 0,
         bumpMap: texture,
-        bumpScale: 0.06
+        bumpScale: 0.06,
     });
 
     return new THREE.Mesh(geometry, material);
@@ -70,13 +212,22 @@ export async function initOrbScene() {
         });
     } catch (error) {
         console.warn('La escena 3D no está disponible; se muestran las esferas de respaldo.', error);
+        stage.querySelectorAll('[data-orb-fallback]').forEach((sphere) => {
+            sphere.hidden = false;
+        });
         return;
     }
 
     const scene = new THREE.Scene();
     const camera = new THREE.OrthographicCamera(-2.8, 2.8, 2.8, -2.8, 0.1, 100);
-    camera.position.set(0, 0, 10.5);
+    // Inclinación de la cámara: mira desde un poco más arriba (en radianes).
+    // 0 = de frente, 0.3 ≈ 17°, 0.5 ≈ 29°
+    const cameraTilt = 0.3;
+    const cameraDistance = 10.5;
+    camera.position.set(0, Math.sin(cameraTilt) * cameraDistance, Math.cos(cameraTilt) * cameraDistance);
+    camera.lookAt(0, 0, 0);
 
+    // Esferas
     const texture = createOrbTexture(THREE);
     const largeSphere = createSphere(THREE, texture, 1.65, 80);
     const smallSphere = createSphere(THREE, texture, 0.6, 56);
@@ -84,6 +235,23 @@ export async function initOrbScene() {
     smallSphere.position.set(1.65, 1.35, 0);
     scene.add(largeSphere, smallSphere);
 
+    // Sombras
+    const shadowTexture = createShadowTexture(THREE);
+    // Las sombras ahora están tumbadas sobre un "suelo" (plano horizontal),
+    // así la inclinación de la cámara les da perspectiva de forma natural.
+    // El segundo valor es la profundidad (eje Z) de la sombra sobre el suelo.
+    const floorY = -2.15;
+    const largeShadow = createShadow(THREE, shadowTexture, 3.6, 2.4);
+    const smallShadow = createShadow(THREE, shadowTexture, 1.4, 1.1);
+    largeShadow.rotation.x = -Math.PI / 2;
+    smallShadow.rotation.x = -Math.PI / 2;
+    largeShadow.position.set(-0.75, floorY, 0);
+    smallShadow.position.set(1.65, floorY, 0);
+    largeShadow.material.opacity = 1;
+    smallShadow.material.opacity = 0.6; // más alta, sombra más tenue
+    scene.add(largeShadow, smallShadow);
+
+    // Luces
     scene.add(new THREE.HemisphereLight('#fffaf0', '#26327f', 2.15));
 
     const keyLight = new THREE.DirectionalLight('#fff4df', 3.2);
@@ -151,6 +319,21 @@ export async function initOrbScene() {
         smallSphere.position.x = 1.65 + Math.sin(elapsed * 0.3) * 0.06;
         smallSphere.position.y = 1.35 + Math.sin(elapsed * 0.7) * 0.06;
 
+        // La sombra se encoge cuando la esfera sube
+        const largeFactor = 1 - Math.sin(elapsed * 0.55) * 0.08;
+        largeShadow.scale.set(
+            largeShadow.userData.baseScale.x * largeFactor,
+            largeShadow.userData.baseScale.y * largeFactor,
+            1,
+        );
+
+        const smallFactor = 1 - Math.sin(elapsed * 0.7) * 0.1;
+        smallShadow.scale.set(
+            smallShadow.userData.baseScale.x * smallFactor,
+            smallShadow.userData.baseScale.y * smallFactor,
+            1,
+        );
+
         renderer.render(scene, camera);
         frameId = window.requestAnimationFrame(animate);
     };
@@ -210,6 +393,7 @@ export async function initOrbScene() {
         });
 
         texture.dispose();
+        shadowTexture.dispose();
         renderer.renderLists.dispose();
         renderer.dispose();
         renderer.forceContextLoss();
@@ -232,4 +416,3 @@ export async function initOrbScene() {
         sphere.hidden = true;
     });
 }
-

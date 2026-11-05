@@ -8,6 +8,7 @@ use BackedEnum;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -16,18 +17,19 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Storage;
 
 class PortfolioSectionResource extends Resource
 {
     protected static ?string $model = PortfolioSection::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBookOpen;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUser;
 
-    protected static ?string $navigationLabel = 'Portfolio (historia)';
+    protected static ?string $navigationLabel = 'Bio y Trayectoria';
 
-    protected static ?string $modelLabel = 'sección del portfolio';
+    protected static ?string $modelLabel = 'sección de bio';
 
-    protected static ?string $pluralModelLabel = 'secciones del portfolio';
+    protected static ?string $pluralModelLabel = 'secciones de bio';
 
     protected static string|\UnitEnum|null $navigationGroup = 'Contenido';
 
@@ -37,17 +39,48 @@ class PortfolioSectionResource extends Resource
     {
         return $schema
             ->components([
-                TextInput::make('heading')->label('Título de la sección')->required()->maxLength(160),
-                TextInput::make('position')->label('Orden')->numeric()->minValue(0)->default(0),
-                Textarea::make('body')->label('Texto')->rows(8)->columnSpanFull(),
+                Select::make('type')
+                    ->label('Tipo de sección')
+                    ->options([
+                        'bio' => 'Biografía / Statement',
+                        'solo_exhibition' => 'Exposición en solitario',
+                        'group_exhibition' => 'Exposición colectiva',
+                        'award' => 'Premios y Distinciones',
+                        'press' => 'Revistas y Prensa',
+                        'education' => 'Formación / Estudios',
+                        'other' => 'Otra trayectoria',
+                    ])
+                    ->default('bio')
+                    ->required(),
+                TextInput::make('heading')->label('Título')->required()->maxLength(160)
+                    ->placeholder('Ej: Statement artístico, Nombre de muestra, Premio...'),
+                TextInput::make('subtitle')->label('Subtítulo / Sala / Publicación (opcional)')
+                    ->maxLength(160)
+                    ->placeholder('Ej: Galería La Imprenta, Revista Vogue Art...'),
+                TextInput::make('year_label')->label('Año o período (opcional)')
+                    ->maxLength(60)
+                    ->placeholder('Ej: 2024, 2021-2023...'),
+                TextInput::make('position')->label('Orden de aparición')->numeric()->minValue(0)->default(0)
+                    ->helperText('Menor número aparece primero.'),
+                DateTimePicker::make('published_at')->label('Fecha de publicación')->default(now()),
+                Textarea::make('body')->label('Texto descriptivo')->rows(6)->columnSpanFull(),
                 Select::make('artwork_id')
-                    ->label('Obra destacada (opcional)')
+                    ->label('Obra asociada opcional')
                     ->relationship('artwork', 'title')
                     ->getOptionLabelFromRecordUsing(fn ($record) => (string) $record->title)
                     ->searchable()
                     ->preload()
                     ->nullable(),
-                DateTimePicker::make('published_at')->label('Publicada'),
+                FileUpload::make('uploaded_gallery')
+                    ->label('Galería de fotografías')
+                    ->disk('public')
+                    ->directory('bio-gallery-temp')
+                    ->multiple()
+                    ->reorderable()
+                    ->image()
+                    ->imageEditor()
+                    ->helperText('Sube imágenes para esta sección. Si subes más de una se mostrará como carrusel.')
+                    ->columnSpanFull(),
             ]);
     }
 
@@ -56,13 +89,35 @@ class PortfolioSectionResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('position')->label('Orden')->sortable(),
+                TextColumn::make('type')->label('Tipo')->badge()
+                    ->formatStateUsing(fn ($state) => match ($state) {
+                        'bio' => 'Biografía / Statement',
+                        'solo_exhibition' => 'Expo Solitaria',
+                        'group_exhibition' => 'Expo Colectiva',
+                        'award' => 'Premio',
+                        'press' => 'Revista / Prensa',
+                        'education' => 'Formación',
+                        default => 'Otro',
+                    }),
                 TextColumn::make('heading')->label('Título')->searchable(),
-                TextColumn::make('artwork.title')->label('Obra destacada'),
-                TextColumn::make('published_at')->label('Publicación')->dateTime('d/m/Y')->sortable(),
+                TextColumn::make('year_label')->label('Año')->sortable(),
+                TextColumn::make('published_at')->label('Publicada')->dateTime('d/m/Y')->sortable(),
             ])
             ->defaultSort('position')
             ->recordActions([
-                EditAction::make()->label('Editar'),
+                EditAction::make()->label('Editar')
+                    ->after(function ($record, array $data): void {
+                        $uploaded = $data['uploaded_gallery'] ?? [];
+                        if (is_array($uploaded) && count($uploaded) > 0) {
+                            foreach ($uploaded as $filePath) {
+                                if ($filePath && Storage::disk('public')->exists($filePath)) {
+                                    $record->addMedia(Storage::disk('public')->path($filePath))
+                                        ->preservingOriginal()
+                                        ->toMediaCollection('gallery');
+                                }
+                            }
+                        }
+                    }),
                 DeleteAction::make()->label('Eliminar'),
             ]);
     }
@@ -74,3 +129,4 @@ class PortfolioSectionResource extends Resource
         ];
     }
 }
+

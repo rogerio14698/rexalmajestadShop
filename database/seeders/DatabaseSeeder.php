@@ -42,6 +42,7 @@ class DatabaseSeeder extends Seeder
             PortfolioSeeder::class,
             CustomerExampleSeeder::class,
             SiteSettingSeeder::class,
+            SocialLinkSeeder::class,
         ]);
     }
 }

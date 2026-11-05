@@ -10,11 +10,15 @@ class ArtworkController extends Controller
 {
     public function index(string $category): View
     {
-        $selectedCategory = Category::query()->where('slug', $category)->firstOrFail();
+        $selectedCategory = Category::query()->with('children')->where('slug', $category)->firstOrFail();
+
+        $categoryIds = $selectedCategory->children->isNotEmpty()
+            ? $selectedCategory->children->pluck('id')->push($selectedCategory->id)
+            : collect([$selectedCategory->id]);
 
         $artworks = Artwork::query()
             ->published()
-            ->where('category_id', $selectedCategory->getKey())
+            ->whereIn('category_id', $categoryIds)
             ->with(['media', 'category'])
             ->orderByDesc('year')
             ->orderByDesc('created_at')
