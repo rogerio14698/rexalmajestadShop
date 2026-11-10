@@ -61,6 +61,15 @@ class Artwork extends Model implements HasMedia
         ];
     }
 
+    protected static function booted(): void
+    {
+        static::saving(function (Artwork $artwork) {
+            if (empty($artwork->published_at)) {
+                $artwork->published_at = now();
+            }
+        });
+    }
+
     public function registerMediaCollections(): void
     {
         $this->addMediaCollection('artwork')->useDisk('public');

@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources\Artworks\Schemas;
 
-use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -17,8 +16,22 @@ class ArtworkForm
     {
         return $schema
             ->components([
-                TextInput::make('title')->label('Título')->required()->maxLength(255),
-                TextInput::make('slug')->label('URL')->required()->unique(ignoreRecord: true)->maxLength(255),
+                TextInput::make('title')
+                    ->label('Título')
+                    ->required()
+                    ->maxLength(255)
+                    ->live(onBlur: true)
+                    ->afterStateUpdated(function (?string $state, callable $set, ?\App\Models\Artwork $record, ?string $operation) {
+                        if ($operation === 'create' || ! $record?->slug) {
+                            $set('slug', Str::slug((string) $state));
+                        }
+                    }),
+                TextInput::make('slug')
+                    ->label('URL')
+                    ->required()
+                    ->unique(ignoreRecord: true)
+                    ->maxLength(255)
+                    ->helperText('Se genera automáticamente a partir del título.'),
                 Select::make('category_id')
                     ->label('Categoría')
                     ->relationship('category', 'name')
@@ -60,7 +73,6 @@ class ArtworkForm
                 Toggle::make('is_for_sale')->label('A la venta'),
                 Toggle::make('is_sold')->label('Vendida'),
                 Toggle::make('ask_shipping')->label('Consultar envío'),
-                DateTimePicker::make('published_at')->label('Publicada'),
                 FileUpload::make('uploaded_images')
                     ->label('Fotografías de la obra')
                     ->disk('public')
