@@ -11,8 +11,37 @@
             <p>Statement artístico, exposiciones en solitario y colectivas, premios y reconocimientos de Rexalmajestad.</p>
         </header>
 
-        @forelse ($sections as $section)
-            <article class="portfolio-story__section" id="sec-{{ $section->id }}" data-reveal>
+        @forelse ($sections as $index => $section)
+            @php
+                // Alternancia no monótona: varía entre [imagen izquierda], [imagen derecha] y [centrada/asimetrica]
+                $layoutVariant = match ($index % 5) {
+                    0 => 'portfolio-story__section--text-left',
+                    1 => 'portfolio-story__section--image-left',
+                    2 => 'portfolio-story__section--image-left portfolio-story__section--offset',
+                    3 => 'portfolio-story__section--text-left',
+                    4 => 'portfolio-story__section--wide-image',
+                };
+
+                $hasVisual = $section->getMedia('gallery')->isNotEmpty() || ($section->artwork && $section->artwork->getFirstMediaUrl('artwork'));
+
+                // Enlace dinámico a la obra asociada o enlace externo opcional
+                $targetUrl = null;
+                $targetLabel = $section->link_label;
+                $isExternal = false;
+
+                if ($section->artwork) {
+                    $targetUrl = route('artworks.show', [
+                        'category' => $section->artwork->category?->slug ?? 'catalogo',
+                        'slug' => $section->artwork->slug,
+                    ]);
+                    $targetLabel = $targetLabel ?: 'Ver obra «'.$section->artwork->title.'»';
+                } elseif ($section->external_url) {
+                    $targetUrl = $section->external_url;
+                    $targetLabel = $targetLabel ?: 'Visitar enlace';
+                    $isExternal = true;
+                }
+            @endphp
+            <article class="portfolio-story__section {{ $layoutVariant }} {{ ! $hasVisual ? 'portfolio-story__section--text-only' : '' }}" id="sec-{{ $section->id }}" data-reveal>
                 <div class="portfolio-story__text">
                     @if ($section->year_label)
                         <span class="portfolio-story__year">{{ $section->year_label }}</span>
@@ -24,6 +53,19 @@
                     @if ($section->body)
                         <div class="page-prose">
                             {!! nl2br(e($section->body)) !!}
+                        </div>
+                    @endif
+
+                    @if ($targetUrl && $targetLabel)
+                        <div class="portfolio-story__action">
+                            <a
+                                href="{{ $targetUrl }}"
+                                class="portfolio-story__link"
+                                @if ($isExternal) target="_blank" rel="noopener noreferrer" @endif
+                            >
+                                <span>{{ $targetLabel }}</span>
+                                <span class="portfolio-story__link-arrow" aria-hidden="true">&rarr;</span>
+                            </a>
                         </div>
                     @endif
                 </div>
@@ -49,14 +91,16 @@
                     </div>
                 @elseif ($section->artwork && $section->artwork->getFirstMediaUrl('artwork'))
                     <figure class="portfolio-story__figure">
-                        <a href="{{ route('artworks.show', ['category' => $section->artwork->category?->slug, 'slug' => $section->artwork->slug]) }}">
+                        <a href="{{ $targetUrl ?: route('artworks.show', ['category' => $section->artwork->category?->slug, 'slug' => $section->artwork->slug]) }}">
                             <img
                                 src="{{ $section->artwork->getFirstMediaUrl('artwork', 'webp') }}"
                                 alt="{{ $section->artwork->getFirstMedia('artwork')?->getCustomProperty('alt') ?: $section->artwork->title }}"
                                 loading="lazy"
                             >
                         </a>
-                        <figcaption>{{ $section->artwork->title }}, {{ $section->artwork->year }} · {{ $section->artwork->technique }}</figcaption>
+                        <figcaption>
+                            {{ $section->artwork->title }}, {{ $section->artwork->year }} · {{ $section->artwork->technique }}
+                        </figcaption>
                     </figure>
                 @endif
             </article>

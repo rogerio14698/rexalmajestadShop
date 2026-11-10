@@ -23,6 +23,8 @@ class PortfolioSection extends Model implements HasMedia
         'year_label',
         'body',
         'artwork_id',
+        'external_url',
+        'link_label',
         'position',
         'published_at',
     ];

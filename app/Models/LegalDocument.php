@@ -14,6 +14,15 @@ class LegalDocument extends Model
         return ['published_at' => 'datetime'];
     }
 
+    protected static function booted(): void
+    {
+        static::saving(function (LegalDocument $document) {
+            if (empty($document->published_at)) {
+                $document->published_at = now();
+            }
+        });
+    }
+
     public function scopePublished(Builder $query): Builder
     {
         return $query->whereNotNull('published_at')->where('published_at', '<=', now());

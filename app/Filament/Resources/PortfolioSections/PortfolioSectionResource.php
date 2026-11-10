@@ -5,6 +5,7 @@ namespace App\Filament\Resources\PortfolioSections;
 use App\Filament\Resources\PortfolioSections\Pages\ManagePortfolioSections;
 use App\Models\PortfolioSection;
 use BackedEnum;
+use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\DateTimePicker;
@@ -15,6 +16,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Storage;
@@ -65,12 +67,23 @@ class PortfolioSectionResource extends Resource
                 DateTimePicker::make('published_at')->label('Fecha de publicación')->default(now()),
                 Textarea::make('body')->label('Texto descriptivo')->rows(6)->columnSpanFull(),
                 Select::make('artwork_id')
-                    ->label('Obra asociada opcional')
+                    ->label('Obra asociada (enlace interno opcional)')
                     ->relationship('artwork', 'title')
                     ->getOptionLabelFromRecordUsing(fn ($record) => (string) $record->title)
                     ->searchable()
                     ->preload()
-                    ->nullable(),
+                    ->nullable()
+                    ->helperText('Si se selecciona, creará un enlace dinámico directo a la ficha de esta obra.'),
+                TextInput::make('external_url')
+                    ->label('Enlace web externo / personalizado (opcional)')
+                    ->url()
+                    ->maxLength(255)
+                    ->placeholder('https://ejemplo.com/articulo-prensa')
+                    ->helperText('Opcional. Introduce una URL si quieres enlazar a una web externa o artículo.'),
+                TextInput::make('link_label')
+                    ->label('Texto del botón o enlace (opcional)')
+                    ->maxLength(120)
+                    ->placeholder('Ej: Ver obra en detalle, Leer artículo en prensa...'),
                 FileUpload::make('uploaded_gallery')
                     ->label('Galería de fotografías')
                     ->disk('public')
@@ -100,11 +113,26 @@ class PortfolioSectionResource extends Resource
                         default => 'Otro',
                     }),
                 TextColumn::make('heading')->label('Título')->searchable(),
+                ImageColumn::make('gallery_preview')
+                    ->label('Fotos')
+                    ->state(fn (PortfolioSection $record) => $record->getMedia('gallery')->map(fn ($m) => $m->getUrl('webp') ?: $m->getUrl())->all())
+                    ->circular()
+                    ->stacked()
+                    ->limit(4)
+                    ->limitedRemainingText(),
                 TextColumn::make('year_label')->label('Año')->sortable(),
                 TextColumn::make('published_at')->label('Publicada')->dateTime('d/m/Y')->sortable(),
             ])
             ->defaultSort('position')
             ->recordActions([
+                Action::make('manageImages')
+                    ->label('Ver fotos')
+                    ->icon('heroicon-o-photo')
+                    ->color('info')
+                    ->modalHeading(fn (PortfolioSection $record) => 'Fotografías: '.$record->heading)
+                    ->modalSubmitAction(false)
+                    ->modalCancelActionLabel('Cerrar')
+                    ->modalContent(fn (PortfolioSection $record) => view('admin.portfolio-gallery-modal', ['record' => $record])),
                 EditAction::make()->label('Editar')
                     ->after(function ($record, array $data): void {
                         $uploaded = $data['uploaded_gallery'] ?? [];

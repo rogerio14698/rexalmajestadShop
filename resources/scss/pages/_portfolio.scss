@@ -33,12 +33,61 @@
 .portfolio-story__section {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    gap: clamp(2rem, 6vw, 5rem);
+    gap: clamp(2rem, 6vw, 5.5rem);
     align-items: center;
 
-    &:nth-of-type(even) {
-        .portfolio-story__figure {
+    &.portfolio-story__section--text-only {
+        grid-template-columns: 1fr;
+        max-width: 44rem;
+        margin-inline: auto;
+    }
+
+    &.portfolio-story__section--image-left {
+        .portfolio-story__figure,
+        .portfolio-story__gallery {
             order: -1;
+        }
+    }
+
+    &.portfolio-story__section--offset {
+        grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+
+        &.portfolio-story__section--image-left {
+            grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+        }
+    }
+
+    &.portfolio-story__section--wide-image {
+        grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    }
+}
+
+.portfolio-story__action {
+    margin-top: var(--space-2);
+}
+
+.portfolio-story__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: var(--text-step-0);
+    font-weight: 600;
+    color: var(--color-cobalt);
+    text-decoration: none;
+    border-bottom: 1.5px solid currentColor;
+    padding-bottom: 0.15rem;
+    transition: color 180ms var(--ease-enter), border-color 180ms var(--ease-enter), transform 180ms var(--ease-enter);
+
+    .portfolio-story__link-arrow {
+        transition: transform 180ms var(--ease-enter);
+    }
+
+    &:hover,
+    &:focus-visible {
+        color: var(--color-cobalt-deep);
+
+        .portfolio-story__link-arrow {
+            transform: translateX(4px);
         }
     }
 }
@@ -115,11 +164,16 @@
 }
 
 @media (max-width: 52rem) {
-    .portfolio-story__section {
+    .portfolio-story__section,
+    .portfolio-story__section.portfolio-story__section--offset,
+    .portfolio-story__section.portfolio-story__section--wide-image {
         grid-template-columns: 1fr;
 
-        &:nth-of-type(even) .portfolio-story__figure {
-            order: 0;
+        &.portfolio-story__section--image-left {
+            .portfolio-story__figure,
+            .portfolio-story__gallery {
+                order: 0;
+            }
         }
     }
 }

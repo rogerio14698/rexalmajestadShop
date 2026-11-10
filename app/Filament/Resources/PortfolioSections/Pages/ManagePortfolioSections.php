@@ -11,6 +11,18 @@ class ManagePortfolioSections extends ManageRecords
 {
     protected static string $resource = PortfolioSectionResource::class;
 
+    public function deleteMedia(int $mediaId): void
+    {
+        $media = \Spatie\MediaLibrary\MediaCollections\Models\Media::find($mediaId);
+        if ($media && $media->model_type === \App\Models\PortfolioSection::class) {
+            $media->delete();
+            \Filament\Notifications\Notification::make()
+                ->title('Fotografía eliminada')
+                ->success()
+                ->send();
+        }
+    }
+
     protected function getHeaderActions(): array
     {
         return [

@@ -43,7 +43,6 @@ class LegalDocumentResource extends Resource
                 ])->required()->unique(ignoreRecord: true),
                 TextInput::make('title')->label('Título')->required()->maxLength(255),
                 Textarea::make('body')->label('Texto revisado')->rows(20)->required()->columnSpanFull(),
-                DateTimePicker::make('published_at')->label('Publicación'),
             ]);
     }
 

@@ -1,6 +1,7 @@
 {{-- Pie de página del sitio. --}}
 @php
     $socialLinks = \App\Models\SocialLink::query()->active()->get();
+    $legalDocuments = \App\Models\LegalDocument::query()->published()->orderBy('id')->get();
 @endphp
 <footer class="site-footer">
     <nav aria-label="Navegación del pie">
@@ -8,7 +9,15 @@
         <a href="{{ route('portfolio') }}">Bio</a>
         <a href="{{ route('exhibitions.index') }}">Exposiciones</a>
         <a href="{{ route('contact.create') }}">Contacto</a>
-        <a href="{{ route('legal.page', ['slug' => 'privacidad']) }}">Politica & Privacidad</a>
+        @if ($legalDocuments->isNotEmpty())
+            @foreach ($legalDocuments as $doc)
+                <a href="{{ route('legal.page', ['slug' => $doc->slug]) }}">{{ $doc->title }}</a>
+            @endforeach
+        @else
+            <a href="{{ route('legal.page', ['slug' => 'aviso-legal']) }}">Aviso Legal</a>
+            <a href="{{ route('legal.page', ['slug' => 'privacidad']) }}">Política de Privacidad</a>
+            <a href="{{ route('legal.page', ['slug' => 'cookies']) }}">Cookies</a>
+        @endif
     </nav>
     <div class="enlacesRedes">
         @if ($socialLinks->isNotEmpty())
