@@ -26,6 +26,15 @@ class Gallery extends Model
         ];
     }
 
+    protected static function booted(): void
+    {
+        static::saving(function (Gallery $gallery) {
+            if (empty($gallery->published_at)) {
+                $gallery->published_at = now();
+            }
+        });
+    }
+
     public function artworks(): HasMany
     {
         return $this->hasMany(Artwork::class);

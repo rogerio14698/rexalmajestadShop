@@ -87,7 +87,15 @@ class Artwork extends Model implements HasMedia
 
     public function scopePublished(Builder $query): Builder
     {
-        return $query->whereNotNull('published_at')->where('published_at', '<=', now());
+        return $query->whereNotNull('published_at')
+            ->where('published_at', '<=', now())
+            ->whereNotNull('category_id')
+            ->whereNotNull('price_cents')
+            ->where(function ($q) {
+                $q->whereNotNull('title')
+                    ->where('title', '<>', '')
+                    ->where('title', '<>', '[]');
+            });
     }
 
     public function scopeForSale(Builder $query): Builder

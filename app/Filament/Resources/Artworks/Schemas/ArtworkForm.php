@@ -64,7 +64,7 @@ class ArtworkForm
                 TextInput::make('weight_grams')->label('Peso (g)')->numeric()->minValue(0)->required(),
                 TextInput::make('series')->label('Serie')->maxLength(255),
                 Textarea::make('description')->label('Descripción (español)')->rows(6)->columnSpanFull(),
-                TextInput::make('price_cents')->label('Precio (céntimos)')->numeric()->minValue(0),
+                TextInput::make('price_cents')->label('Precio (céntimos)')->numeric()->minValue(0)->required(),
                 TextInput::make('stock')->label('Stock')->numeric()->minValue(0)->required(),
                 Select::make('tax_class')
                     ->label('Clase fiscal')

@@ -42,7 +42,11 @@ class GalleryResource extends Resource
             ->components([
                 TextInput::make('name')->label('Nombre')->required()->maxLength(120)
                     ->live(onBlur: true)
-                    ->afterStateUpdated(fn ($state, callable $set, string $operation) => $operation === 'create' ? $set('slug', Str::slug((string) $state)) : null),
+                    ->afterStateUpdated(function (?string $state, callable $set, ?\App\Models\Gallery $record, ?string $operation) {
+                        if ($operation === 'create' || ! $record?->slug) {
+                            $set('slug', Str::slug((string) $state));
+                        }
+                    }),
                 TextInput::make('slug')->label('URL')->required()->unique(ignoreRecord: true)->maxLength(120),
                 Textarea::make('description')->label('Descripción')->rows(4)->columnSpanFull(),
                 DateTimePicker::make('published_at')->label('Publicada'),
