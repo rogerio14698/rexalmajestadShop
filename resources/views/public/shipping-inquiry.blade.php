@@ -1,4 +1,4 @@
-<x-app :title="'Consultar envío: '.$artwork->title.' | Rexalmajestad">
+<x-app :title="'Consultar envío: '.$artwork->title.' | Rexalmajestad'">
     <section class="content-page" aria-labelledby="shipping-inquiry-title">
         <h1 id="shipping-inquiry-title">Consultar el envío</h1>
         <p>Antes de comprar «{{ $artwork->title }}», pide una cotización de envío.</p>
