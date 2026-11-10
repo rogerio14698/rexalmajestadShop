@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Artworks;
 use App\Filament\Resources\Artworks\Pages\CreateArtwork;
 use App\Filament\Resources\Artworks\Pages\EditArtwork;
 use App\Filament\Resources\Artworks\Pages\ListArtworks;
+use App\Filament\Resources\Artworks\RelationManagers\MediaRelationManager;
 use App\Filament\Resources\Artworks\Schemas\ArtworkForm;
 use App\Filament\Resources\Artworks\Tables\ArtworksTable;
 use App\Models\Artwork;
@@ -43,7 +44,7 @@ class ArtworkResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            MediaRelationManager::class,
         ];
     }
 
