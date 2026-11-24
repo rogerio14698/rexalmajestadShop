@@ -1,0 +1,58 @@
+@use '../abstracts/mixins' as *;
+
+.error-page {
+    @include page-gutter;
+    min-height: calc(100vh - 12rem);
+    display: grid;
+    place-items: center;
+    padding-block: clamp(8rem, 14vw, 12rem) var(--space-12);
+}
+
+.error-page__card {
+    position: relative;
+    width: min(100%, 36rem);
+    display: grid;
+    gap: var(--space-4);
+    text-align: center;
+    justify-items: center;
+}
+
+.error-page__motif {
+    width: 6.5rem;
+    height: 6.5rem;
+    margin-bottom: var(--space-2);
+}
+
+.error-page__code {
+    font-family: var(--font-editorial);
+    font-size: clamp(4rem, 12vw, 8rem);
+    line-height: 0.9;
+    letter-spacing: -0.04em;
+    color: var(--color-cobalt);
+    margin: 0;
+    font-weight: 500;
+}
+
+.error-page__title {
+    font-family: var(--font-editorial);
+    font-size: var(--text-step-2);
+    color: var(--color-ink);
+    margin: 0;
+}
+
+.error-page__description {
+    font-family: var(--font-sans);
+    font-size: var(--text-step-0);
+    color: var(--color-muted-ink);
+    max-width: 44ch;
+    margin-inline: auto;
+    line-height: 1.5;
+}
+
+.error-page__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    justify-content: center;
+    margin-top: var(--space-3);
+}

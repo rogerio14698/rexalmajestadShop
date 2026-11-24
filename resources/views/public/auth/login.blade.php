@@ -12,5 +12,6 @@
         </form>
         <p><a class="text-link" href="{{ route('password.request') }}">¿Olvidaste la contraseña?</a></p>
         <p><a class="text-link" href="{{ route('register') }}">Crear una cuenta</a></p>
+        <x-google-auth-button />
     </section>
 </x-app>

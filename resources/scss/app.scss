@@ -12,9 +12,11 @@
 @use 'components/carousel';
 @use 'components/motifs';
 @use 'components/cookies';
+@use 'components/google-auth';
 @use 'pages/home';
 @use 'pages/catalog';
 @use 'pages/shop';
 @use 'pages/exhibitions';
 @use 'pages/account';
 @use 'pages/portfolio';
+@use 'pages/errors';

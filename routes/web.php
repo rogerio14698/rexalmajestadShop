@@ -22,12 +22,17 @@ use App\Http\Controllers\ShopController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\StripeWebhookController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Auth\GoogleAuthController;
 
 // En el subdominio de administración: redirige '/' al login de administración
 Route::domain('admin.rexalmajestad.com')->group(function () {
     Route::get('/', function () {
         return redirect()->route('filament.admin.auth.login');
     });
+
+    // Login con Google para administradores (misma URI de callback registrada en Google Cloud)
+    Route::get('/auth/google/redirect', [GoogleAuthController::class, 'redirect'])->name('admin.google.redirect');
+    Route::get('/auth/google/callback', [GoogleAuthController::class, 'callback'])->name('admin.google.callback');
 
     Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
         Route::get('/pedidos/{order}', [AdminOrderController::class, 'show'])
@@ -39,6 +44,15 @@ Route::domain('admin.rexalmajestad.com')->group(function () {
             Route::get('/iva.csv', InvoiceReportController::class)->name('vat');
         });
     });
+
+    // Bloquear rutas de autenticación de clientes y públicas bajo el subdominio admin
+    Route::any('/registro', fn () => abort(404));
+    Route::any('/iniciar-sesion', fn () => abort(404));
+    Route::any('/recuperar-contrasena', fn () => abort(404));
+    Route::any('/restablecer-contrasena/{token?}', fn () => abort(404));
+    Route::any('/verificar-correo/{any?}', fn () => abort(404));
+    Route::any('/cuenta/{any?}', fn () => abort(404))->where('any', '.*');
+    Route::any('/perfil', fn () => abort(404));
 });
 
 // En el dominio principal: bloquea /admin/... para que no se use ahí

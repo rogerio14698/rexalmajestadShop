@@ -10,6 +10,7 @@ use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
+use Filament\View\PanelsRenderHook;
 use Filament\Widgets\AccountWidget;
 use App\Filament\Widgets\AdminExportsWidget;
 use App\Filament\Widgets\AdminMetricsWidget;
@@ -29,10 +30,15 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
+            ->profile()
             ->brandName('Rexalmajestad · Administración')
             ->colors([
                 'primary' => Color::Blue,
-            ]);
+            ])
+            ->renderHook(
+                PanelsRenderHook::AUTH_LOGIN_FORM_AFTER,
+                fn (): string => view('filament.auth.google-login')->render(),
+            );
 
         if ($domain = env('ADMIN_DOMAIN', 'admin.rexalmajestad.com')) {
             $panel->domain($domain);

@@ -41,4 +41,18 @@ class AdminPanelTest extends TestCase
             ->assertOk()
             ->assertSee('Zonas de envío');
     }
+
+    public function test_customer_auth_routes_return_404_on_admin_subdomain(): void
+    {
+        $this->get('https://admin.rexalmajestad.com/registro')
+            ->assertNotFound()
+            ->assertSee('404')
+            ->assertSee('Página no encontrada');
+
+        $this->get('https://admin.rexalmajestad.com/iniciar-sesion')
+            ->assertNotFound();
+
+        $this->get('https://admin.rexalmajestad.com/recuperar-contrasena')
+            ->assertNotFound();
+    }
 }

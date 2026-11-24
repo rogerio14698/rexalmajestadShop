@@ -9,5 +9,6 @@
             <x-form-field name="password_confirmation" label="Repite la contraseña" type="password" required autocomplete="new-password" />
             <x-button type="submit">Crear cuenta</x-button>
         </form>
+        <x-google-auth-button />
     </section>
 </x-app>

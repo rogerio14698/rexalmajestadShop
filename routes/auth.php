@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\EmailVerificationNotificationController;
 use App\Http\Controllers\Auth\EmailVerificationPromptController;
+use App\Http\Controllers\Auth\GoogleAuthController;
 use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
@@ -18,6 +19,10 @@ Route::middleware('guest')->group(function () {
     Route::post('/recuperar-contrasena', [PasswordResetLinkController::class, 'store'])->middleware('throttle:5,1')->name('password.email');
     Route::get('/restablecer-contrasena/{token}', [NewPasswordController::class, 'create'])->name('password.reset');
     Route::post('/restablecer-contrasena', [NewPasswordController::class, 'store'])->middleware('throttle:5,1')->name('password.store');
+
+    // Inicio de sesión con Google para clientes
+    Route::get('/auth/google/redirect', [GoogleAuthController::class, 'redirect'])->name('google.redirect');
+    Route::get('/auth/google/callback', [GoogleAuthController::class, 'callback'])->name('google.callback');
 });
 
 Route::middleware('auth')->group(function () {

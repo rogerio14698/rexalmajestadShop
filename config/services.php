@@ -48,4 +48,12 @@ return [
         'mode' => env('PAYPAL_MODE', 'sandbox'),
     ],
 
+    'google' => [
+        'client_id' => env('GOOGLE_CLIENT_ID'),
+        'client_secret' => env('GOOGLE_CLIENT_SECRET'),
+        // La URI de retorno se calcula en tiempo de ejecución según el dominio
+        // (rexalmajestad.com o admin.rexalmajestad.com).
+        'redirect' => '/auth/google/callback',
+    ],
+
 ];
