@@ -42,8 +42,8 @@ Route::get('/obras/{category}', [ArtworkController::class, 'index'])->name('artw
 Route::get('/obras/{category}/{slug}', [ArtworkController::class, 'show'])->name('artworks.show');
 
 // Redirecciones de las URLs antiguas /portfolio/{categoria}[/{obra}].
-Route::get('/portfolio/{category}/{slug}', fn (string $category, string $slug) => redirect()->route('artworks.show', compact('category', 'slug'), 301));
-Route::get('/portfolio/{category}', fn (string $category) => redirect()->route('artworks.category', compact('category'), 301));
+Route::get('/portfolio/{category}/{slug}', fn(string $category, string $slug) => redirect()->route('artworks.show', compact('category', 'slug'), 301));
+Route::get('/portfolio/{category}', fn(string $category) => redirect()->route('artworks.category', compact('category'), 301));
 Route::get('/carrito', [CartController::class, 'show'])->name('cart.show');
 Route::post('/carrito/obras/{artwork}', [CartController::class, 'add'])->name('cart.add');
 Route::patch('/carrito/articulos/{item}', [CartController::class, 'update'])->name('cart.update');
@@ -77,14 +77,24 @@ Route::middleware('auth')->group(function () {
     Route::patch('/perfil', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/perfil', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
-Route::middleware('auth')->prefix('admin/exports')->name('admin.exports.')->group(function () {
-    Route::get('/pedidos.csv', [AdminExportController::class, 'orders'])->name('orders');
-    Route::get('/obras.csv', [AdminExportController::class, 'artworks'])->name('artworks');
-    Route::get('/iva.csv', InvoiceReportController::class)->name('vat');
+
+
+//Redirección a un subdominio de admin.rexalmajestad.com
+Route::domain('admin.rexalmajestad.com')->group(function () {
+    Route::prefix('admin')->name('admin.')->group(function () {
+        Route::get('/pedidos/{order}', [AdminOrderController::class, 'show'])
+            ->middleware('auth')
+            ->name('orders.show');
+    });
+    Route::middleware('auth')->prefix('admin/exports')->name('admin.exports.')->group(function () {
+        Route::get('/pedidos.csv', [AdminExportController::class, 'orders'])->name('orders');
+        Route::get('/obras.csv', [AdminExportController::class, 'artworks'])->name('artworks');
+        Route::get('/iva.csv', InvoiceReportController::class)->name('vat');
+    });
+    //devuelve error si entro en rexalmajestad/admin
+    Route::any('/admin/{any?}', fn () => abort(404))->where('any', '.*');
 });
-Route::get('/admin/pedidos/{order}', [AdminOrderController::class, 'show'])
-    ->middleware('auth')
-    ->name('admin.orders.show');
+
 Route::get('/cuenta/facturas/{invoice}/pdf', InvoicePdfController::class)
     ->middleware(['auth', 'verified'])
     ->name('invoices.download');
