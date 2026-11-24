@@ -25,11 +25,7 @@ use Illuminate\Support\Facades\Route;
 
 // En el subdominio de administración: redirige '/' al login (o al panel si ya está logueado)
 Route::domain('admin.rexalmajestad.com')->group(function () {
-    Route::get('/', function () {
-        // Si usas la ruta estándar de auth.php ('login'), redirige ahí;
-        // si ya está autenticado y tienes una ruta de panel, puedes llevarlo allí.
-        return redirect()->route('login');
-    });
+    
 
     Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
         Route::get('/pedidos/{order}', [AdminOrderController::class, 'show'])
@@ -40,6 +36,11 @@ Route::domain('admin.rexalmajestad.com')->group(function () {
             Route::get('/obras.csv', [AdminExportController::class, 'artworks'])->name('artworks');
             Route::get('/iva.csv', InvoiceReportController::class)->name('vat');
         });
+    });
+    Route::get('/', function () {
+        // Si usas la ruta estándar de auth.php ('login'), redirige ahí;
+        // si ya está autenticado y tienes una ruta de panel, puedes llevarlo allí.
+        return redirect()->route('login');
     });
 });
 
