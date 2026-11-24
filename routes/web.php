@@ -23,6 +23,31 @@ use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\StripeWebhookController;
 use Illuminate\Support\Facades\Route;
 
+// En el subdominio de administración: redirige '/' al login (o al panel si ya está logueado)
+Route::domain('admin.rexalmajestad.com')->group(function () {
+    Route::get('/', function () {
+        // Si usas la ruta estándar de auth.php ('login'), redirige ahí;
+        // si ya está autenticado y tienes una ruta de panel, puedes llevarlo allí.
+        return redirect()->route('login');
+    });
+
+    Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
+        Route::get('/pedidos/{order}', [AdminOrderController::class, 'show'])
+            ->name('orders.show');
+
+        Route::prefix('exports')->name('exports.')->group(function () {
+            Route::get('/pedidos.csv', [AdminExportController::class, 'orders'])->name('orders');
+            Route::get('/obras.csv', [AdminExportController::class, 'artworks'])->name('artworks');
+            Route::get('/iva.csv', InvoiceReportController::class)->name('vat');
+        });
+    });
+});
+
+// En el dominio principal: bloquea /admin/... para que no se use ahí
+Route::domain('rexalmajestad.com')->group(function () {
+    Route::any('/admin/{any?}', fn () => abort(404))->where('any', '.*');
+});
+
 Route::view('/', 'public.home')->name('home');
 Route::redirect('/inicio', '/')->name('home.legacy');
 Route::view('/sobre-mi', 'public.about')->name('about');
@@ -76,32 +101,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/perfil', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/perfil', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/perfil', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
-
-
-// En el dominio principal: bloquea /admin/... para que no se use ahí
-Route::domain('rexalmajestad.com')->group(function () {
-    Route::any('/admin/{any?}', fn () => abort(404))->where('any', '.*');
-});
-
-// En el subdominio de administración: redirige '/' al login (o al panel si ya está logueado)
-Route::domain('admin.rexalmajestad.com')->group(function () {
-    Route::get('/', function () {
-        // Si usas la ruta estándar de auth.php ('login'), redirige ahí;
-        // si ya está autenticado y tienes una ruta de panel, puedes llevarlo allí.
-        return redirect()->route('login');
-    });
-
-    Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
-        Route::get('/pedidos/{order}', [AdminOrderController::class, 'show'])
-            ->name('orders.show');
-
-        Route::prefix('exports')->name('exports.')->group(function () {
-            Route::get('/pedidos.csv', [AdminExportController::class, 'orders'])->name('orders');
-            Route::get('/obras.csv', [AdminExportController::class, 'artworks'])->name('artworks');
-            Route::get('/iva.csv', InvoiceReportController::class)->name('vat');
-        });
-    });
 });
 
 Route::get('/cuenta/facturas/{invoice}/pdf', InvoicePdfController::class)
