@@ -79,20 +79,29 @@ Route::middleware('auth')->group(function () {
 });
 
 
-//Redirección a un subdominio de admin.rexalmajestad.com
-Route::domain('admin.rexalmajestad.com')->group(function () {
-    Route::prefix('admin')->name('admin.')->group(function () {
-        Route::get('/pedidos/{order}', [AdminOrderController::class, 'show'])
-            ->middleware('auth')
-            ->name('orders.show');
-    });
-    Route::middleware('auth')->prefix('admin/exports')->name('admin.exports.')->group(function () {
-        Route::get('/pedidos.csv', [AdminExportController::class, 'orders'])->name('orders');
-        Route::get('/obras.csv', [AdminExportController::class, 'artworks'])->name('artworks');
-        Route::get('/iva.csv', InvoiceReportController::class)->name('vat');
-    });
-    //devuelve error si entro en rexalmajestad/admin
+// En el dominio principal: bloquea /admin/... para que no se use ahí
+Route::domain('rexalmajestad.com')->group(function () {
     Route::any('/admin/{any?}', fn () => abort(404))->where('any', '.*');
+});
+
+// En el subdominio de administración: redirige '/' al login (o al panel si ya está logueado)
+Route::domain('admin.rexalmajestad.com')->group(function () {
+    Route::get('/', function () {
+        // Si usas la ruta estándar de auth.php ('login'), redirige ahí;
+        // si ya está autenticado y tienes una ruta de panel, puedes llevarlo allí.
+        return redirect()->route('login');
+    });
+
+    Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
+        Route::get('/pedidos/{order}', [AdminOrderController::class, 'show'])
+            ->name('orders.show');
+
+        Route::prefix('exports')->name('exports.')->group(function () {
+            Route::get('/pedidos.csv', [AdminExportController::class, 'orders'])->name('orders');
+            Route::get('/obras.csv', [AdminExportController::class, 'artworks'])->name('artworks');
+            Route::get('/iva.csv', InvoiceReportController::class)->name('vat');
+        });
+    });
 });
 
 Route::get('/cuenta/facturas/{invoice}/pdf', InvoicePdfController::class)
