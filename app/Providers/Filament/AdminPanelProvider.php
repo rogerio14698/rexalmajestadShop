@@ -24,7 +24,7 @@ class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
-        return $panel
+        $panel = $panel
             ->default()
             ->id('admin')
             ->path('admin')
@@ -32,7 +32,13 @@ class AdminPanelProvider extends PanelProvider
             ->brandName('Rexalmajestad · Administración')
             ->colors([
                 'primary' => Color::Blue,
-            ])
+            ]);
+
+        if ($domain = env('ADMIN_DOMAIN', 'admin.rexalmajestad.com')) {
+            $panel->domain($domain);
+        }
+
+        return $panel
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
             ->pages([

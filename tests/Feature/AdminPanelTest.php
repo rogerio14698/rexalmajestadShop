@@ -13,13 +13,14 @@ class AdminPanelTest extends TestCase
     public function test_only_verified_administrators_can_open_the_filament_panel(): void
     {
         $customer = User::factory()->create(['role' => 'customer']);
-        $this->actingAs($customer)->get('/admin')->assertForbidden();
+        $adminUrl = 'https://admin.rexalmajestad.com/admin';
+        $this->actingAs($customer)->get($adminUrl)->assertForbidden();
 
         $admin = User::factory()->create([
             'role' => 'admin',
             'email_verified_at' => now(),
         ]);
-        $this->actingAs($admin)->get('/admin')->assertOk();
+        $this->actingAs($admin)->get($adminUrl)->assertOk();
     }
 
     public function test_admin_resource_forms_render_with_localized_fields(): void
@@ -30,13 +31,13 @@ class AdminPanelTest extends TestCase
         ]);
 
         $this->actingAs($admin)
-            ->get('/admin/artworks/create')
+            ->get('https://admin.rexalmajestad.com/admin/artworks/create')
             ->assertOk()
             ->assertSee('Título')
             ->assertSee('Categoría');
 
         $this->actingAs($admin)
-            ->get('/admin/shipping-zones')
+            ->get('https://admin.rexalmajestad.com/admin/shipping-zones')
             ->assertOk()
             ->assertSee('Zonas de envío');
     }
